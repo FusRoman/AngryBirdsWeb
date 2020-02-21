@@ -1,6 +1,7 @@
 class Button{
 
-    constructor(ctx, x, y, width, height, srcButtonImage, content){
+    constructor(ctx, x, y, width, height, srcButtonImage, srcButtonSize, content){
+        let [xImg, yImg, widthImg, heightImg] = srcButtonSize;
         this.ctx = ctx;
         this.x = x;
         this.y = y;
@@ -9,10 +10,14 @@ class Button{
         this.buttonImg = new Image();
         this.buttonImg.src = srcButtonImage;
         this.content = content;
+        this.xImg = xImg;
+        this.yImg = yImg;
+        this.widthImg = widthImg;
+        this.heightImg = heightImg;
     }
 
     drawButton(){
-        this.ctx.drawImage(this.buttonImg, this.x, this.y, this.width, this.height);
+        this.ctx.drawImage(this.buttonImg, this.xImg, this.yImg, this.widthImg, this.heightImg, this.x, this.y, this.width, this.height);
     }
 
     IsInButton(x, y){
