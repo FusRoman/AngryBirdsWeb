@@ -1,5 +1,6 @@
 let background_canvas = document.getElementById("background_canvas");
 let background_context = background_canvas.getContext("2d");
+let showFPS = document.getElementById("fpsCounter");
 /*
 let drawing_canvas = document.getElementById("drawing_canvas");
 let drawing_context = drawing_canvas.getContext("2d");*/
@@ -38,14 +39,19 @@ function camera(){
 }*/
 
 let lastLoop = performance.now();
+let counter = 0;
 let fps = 0;
 background_context.font = "30px Arial";
 
 function fpsCounter() {
+    counter += 1;
     delta = (performance.now() - lastLoop) / 1000;
     lastLoop = performance.now();
     fps = Math.round(1 / delta);
-    return fps;
+    if (counter == 30) {
+        showFPS.innerHTML = "fps : " + fps + "</br>time elapsed : " + delta * 1000 + " ms";
+        counter = 0;
+    }
 }
 
 let camera = new Vector2D(0, 0);
@@ -73,12 +79,12 @@ function gameStep(timeStep) {
     background_context.clearRect(0 - camera.x, 0 - camera.y, background_canvas.width, background_canvas.height);
 
     continuousCamera(background_context);
-    background_context.fillText(fpsCounter(), 10 - camera.x, 30 - camera.y);
     aabb1.drawAABBCollideBox(background_context);
     aabb2.drawAABBCollideBox(background_context);
     aabb3.drawAABBCollideBox(background_context);
     circle1.drawCircleCollideBox(background_context);
     circle2.drawCircleCollideBox(background_context);
+    fpsCounter();
 
 
     requestAnimationFrame(gameStep);
