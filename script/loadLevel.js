@@ -4,4 +4,8 @@ class Level{
         this.levelName = levelName;
     }
 
+    parser(){
+        
+    }
+
 }

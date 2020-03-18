@@ -13,7 +13,7 @@ class Engine {
 
     constructor(timeStep, gameObjectList){
         this.timeStep = timeStep;
-        this.gameObjectList = gameObjectList
+        this.gameObjectList = gameObjectList;
     }
 
     updateTime(){
