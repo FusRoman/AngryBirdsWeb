@@ -11,9 +11,9 @@ class Edge {
 
 class Shape {
 
-    constructor(p, id) {
+    constructor(p) {
         this.shapePoint = p;
-        this.id = id;
+        this.tolerance = 0.00001;
     }
 
     getFarthestPoint(direction) {
@@ -107,7 +107,7 @@ class Shape {
             let a = simplex[i];
             let b = simplex[j];
 
-            let e = a.sub(b);
+            let e = b.sub(a);
             let normal = e.tripleProductExpansion(a, e);
             let normalize_vect = normal.normalize();
             let d = normalize_vect.dot(a);
@@ -122,13 +122,13 @@ class Shape {
         return closest;
     }
 
-    EPA(shape1, shape2, simplex) {
+    EPA(shape2, simplex) {
         while (true) {
             let edge = this.findClosestEdge(simplex);
-            let p = shape1.support(shape2, edge.normal);
+            let p = this.support(shape2, edge.normal);
             let d = p.dot(edge.normal);
-            if (d - edge.distance < this.tolerance) {
 
+            if (d - edge.distance < this.tolerance) {
                 let res = new Array();
                 res.push(edge.normal);
                 res.push(d);
@@ -150,17 +150,5 @@ class Shape {
         }
         ctx.lineTo(this.shapePoint[0].x, this.shapePoint[0].y);
         ctx.stroke();
-    }
-
-    equals(otherShape) {
-        let res = true;
-        this.shapePoint.forEach(vect1 => {
-            otherShape.shapePoint.forEach(vect2 => {
-                if (!vect1.equals(vect2)) {
-                    res = false;
-                }
-            });
-        });
-        return this.id === otherShape.id && res;
     }
 }

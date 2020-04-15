@@ -12,20 +12,20 @@ class Camera {
     */
     continuousCamera() {
         if (this.buttonCameraPressed.has(90)) {
-            this.drawingContext.translate(0, -5);
-            this.coordCamera.y -= 5;
-        }
-        if (this.buttonCameraPressed.has(81)) {
-            this.drawingContext.translate(-5, 0);
-            this.coordCamera.x -= 5;
-        }
-        if (this.buttonCameraPressed.has(83)) {
             this.drawingContext.translate(0, 5);
             this.coordCamera.y += 5;
         }
-        if (this.buttonCameraPressed.has(68)) {
+        if (this.buttonCameraPressed.has(81)) {
             this.drawingContext.translate(5, 0);
             this.coordCamera.x += 5;
+        }
+        if (this.buttonCameraPressed.has(83)) {
+            this.drawingContext.translate(0, -5);
+            this.coordCamera.y -= 5;
+        }
+        if (this.buttonCameraPressed.has(68)) {
+            this.drawingContext.translate(-5, 0);
+            this.coordCamera.x -= 5;
         }
     }
 

@@ -1,72 +1,30 @@
-class GameObject {
+const GMcondition = Object.freeze({ "awake": 1, "sleeping": 2, "static": 3 });
 
-    constructor(shape, mass) {
+
+class GameObject extends Dynamics {
+
+    constructor(shape, mass, restitution, condition, id) {
+        super(shape, new Vector2D(0, 0), new Vector2D(0, 0), mass, restitution, condition);
+
+
+        this.id = id; // id of the gameObject, must be unique for each gameObject to perform the equal method
         this.shape = shape // rigid body object
-        this.speed = new Vector2D(0, 0); // velocity vector
-        this.acc = new Vector2D(0, 0); // acceleration vector
-        //this.theta = new Vector2D(thetaX, thetaY); // orientation
-        //this.omega = new Vector2D(omegaX, omegaY); // velocity angular
-        //this.alpha = new Vector2D(alphaX, alphaY); // angular acceleration
-        this.mass = mass;
 
-        if (mass == 0) {
-            /* on represente une masse infinie comme une masse valant 0.
-               Pour éviter les divisions par 0, on considère que la masse
-               inverse vaut 0 */
-            this.invMass = 0;
-        }
-        else {
-            this.invMass = 1 / mass;
-        }
     }
 
-    draw(context){
+    equal(gm) {
+        return this.id == gm.id;
+    }
+
+    draw(context) {
+        context.strokeStyle = "#000000";
+        if (this.condition == GMcondition.awake) {
+            context.strokeStyle = "#ff0000";
+        }
+        if (this.condition == GMcondition.sleeping) {
+            context.strokeStyle = "#00ff00";
+        }
         this.shape.draw(context);
     }
 
-    /*
-        ajoute une nouvelle force aux objets 
-    */
-    addForce(new_force){
-        this.force.push(new_force);
-    }
-
-    /*
-        Calcul de la seconde loi de Newton : sum(forces) = m * a
-    */
-    computeSecondLawNewton(force){
-        let sumForce = new Vector2D(0, 0);
-        force.forEach(element => {
-            sumForce = sumForce.add(element);
-        });
-        return sumForce;
-    }
-
-    /*
-        Nous utilisons la methodes d'integration de la vitesse de Verlet
-    */
-    updatePos(timeStep) {
-        let withSpeed = this.speed.mul(timeStep);
-        let withAcc = this.acc.mul(0.5).mul(timeStep * timeStep);
-        let newPos = withSpeed.add(withAcc);
-        for(let i = 0; i < this.shape.shapePoint.length; i++){
-            this.shape.shapePoint[i] = this.shape.shapePoint[i].add(newPos);
-        }
-    }
-
-    updateSpeed(timeStep) {
-        this.speed = this.speed.add(this.acc.mul(timeStep));
-    }
-
-    updateAcc(force) {
-        let somme_force = this.computeSecondLawNewton(force);
-        somme_force = somme_force.mul(this.invMass);
-        this.acc = this.acc.add(somme_force).div(2);
-    }
-
-    applyKineticLawOfmotion(timeStep, force){
-        this.updateAcc(force);
-        this.updateSpeed(timeStep);
-        this.updatePos(timeStep);
-    }
 }

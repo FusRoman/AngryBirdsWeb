@@ -1,17 +1,16 @@
 class Circle extends Shape {
 
-    constructor(x, y, radius, id){
+    constructor(x, y, radius){
         let p = new Array();
         p.push(new Vector2D(x, y));
-        super(p, id);
+        super(p);
         this.radius = radius;
     }
 
     getFarthestPoint(direction) {
-        let res = new Vector2D(0, 0);
-        res.x = this.shapePoint[0].x + this.radius * (direction.x / direction.norm());
-        res.y = this.shapePoint[0].y + this.radius * (direction.y / direction.norm());
-        return res;
+        let tmp = direction.div(direction.norm());
+        tmp = tmp.mul(this.radius);
+        return this.shapePoint[0].add(tmp);
     }
 
     draw(ctx){

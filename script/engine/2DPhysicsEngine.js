@@ -1,27 +1,39 @@
 class PhysicsEngine {
 
-    constructor(gameObject, ctx){
+    constructor(gameObject, ctx) {
         this.gameObject = gameObject;
         this.timeStep = 0;
-        this.deltaT = 0.01;
-        this.force = new Array();
-        let gravity = new Vector2D(0, 9.81);
-        this.force.push(gravity);
+        this.deltaT = 0.1;
+        this.restingLimit = 0.02;
 
         this.drawingContext = ctx;
-    }
 
-    KineticMotionAllObject() {
-        this.gameObject.forEach(gm => {
-            gm.applyKineticLawOfmotion(this.timeStep, this.force);
-        });
-        this.timeStep += this.deltaT;
+        this.collisionEngine = new CollisionEngine(this.gameObject);
+        this.objectInCollision = new Array();
     }
 
     renderEngine() {
         this.gameObject.forEach(gm => {
             gm.draw(this.drawingContext);
         });
+    }
+
+    applyPhysics() {
+        this.KineticMotionAllObject();
+        this.objectInCollision = this.collisionEngine.collisionDetection();
+        this.collisionEngine.collisionResolution(this.objectInCollision);
+    }
+
+    KineticMotionAllObject() {
+        this.gameObject.forEach(gm => {
+            gm.applyKineticLawOfmotion(this.deltaT);
+            /*if (deltaPos != 0 && decimalPart <= this.restingLimit && gm.condition == GMcondition.awake) {
+                console.log("2 :", deltaPos);
+                gm.condition = GMcondition.sleeping;
+            }*/
+            gm.collisionForce = new Array();
+        });
+        this.timeStep += this.deltaT;
     }
 
 }
