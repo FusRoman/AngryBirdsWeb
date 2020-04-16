@@ -92,7 +92,7 @@ requestAnimationFrame(gameStep);
 
 background_canvas.addEventListener("click", function (event) {
     let newShape = new Rectangle(100, 100, 20, 50);
-    let newGM = new GameObject(newShape, 10, Math.random(), GMcondition.awake, i);
+    let newGM = new GameObject(newShape, 1, Math.random(), GMcondition.awake, i);
     newGM.speed = new Vector2D(10, -50);
     game_object.push(newGM);
     ++i;

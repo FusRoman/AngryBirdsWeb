@@ -8,9 +8,11 @@ class Circle extends Shape {
     }
 
     getFarthestPoint(direction) {
+        let res = new Array();
         let tmp = direction.div(direction.norm());
         tmp = tmp.mul(this.radius);
-        return this.shapePoint[0].add(tmp);
+        res.push(this.shapePoint[0].add(tmp));
+        return res;
     }
 
     draw(ctx){

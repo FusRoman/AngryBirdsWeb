@@ -18,15 +18,20 @@ class Shape {
 
     getFarthestPoint(direction) {
         let max = Number.MIN_SAFE_INTEGER;
-        let res = new Vector2D(0, 0);
+        let res = new Array();
+        let point = new Vector2D(0, 0);
+        let index = 0;
         for (let i = 0; i < this.shapePoint.length; i++) {
             let dot = this.shapePoint[i].dot(direction);
             if (dot > max) {
                 max = dot;
-                res.x = this.shapePoint[i].x;
-                res.y = this.shapePoint[i].y;
+                point.x = this.shapePoint[i].x;
+                point.y = this.shapePoint[i].y;
+                index = i;
             }
         }
+        res.push(point);
+        res.push(index);
         return res;
     }
 
@@ -36,7 +41,7 @@ class Shape {
             -direction ici
         */
         let p2 = S2.getFarthestPoint(direction.mul(-1));
-        return p1.sub(p2);
+        return p1[0].sub(p2[0]);
     }
 
     containsOrigin(simplex, direction) {
@@ -80,7 +85,9 @@ class Shape {
         let simplex = new Array();
         simplex.push(this.support(S2, direction));
         direction = direction.mul(-1);
-        while (true) {
+        let limit = 50;
+        let it = 0;
+        while (it < limit) {
             simplex.push(this.support(S2, direction));
             if (simplex[simplex.length - 1].dot(direction) <= 0) {
                 let res = new Array();
@@ -96,7 +103,11 @@ class Shape {
                     return res;
                 }
             }
+            ++it;
         }
+        let res = new Array();
+        res.push(false);
+        return res;
     }
 
     findClosestEdge(simplex) {
@@ -140,6 +151,115 @@ class Shape {
             }
 
         }
+    }
+
+    findBestEdge(normal) {
+        let resFarthestPoint = this.getFarthestPoint(normal);
+        let pointFarthestPoint = resFarthestPoint[0];
+        let indexFarthestPoint = resFarthestPoint[1];
+        let nextIndice = (indexFarthestPoint + 1 < this.shapePoint.length) ? indexFarthestPoint + 1 : 0;
+        let prevIndice = (indexFarthestPoint - 1 > 0) ? indexFarthestPoint - 1 : this.shapePoint.length - 1;
+        let prevPoint = this.shapePoint[prevIndice];
+        let nextPoint = this.shapePoint[nextIndice];
+        let left = pointFarthestPoint.sub(nextIndice).normalize();
+        let right = pointFarthestPoint.sub(prevPoint).normalize();
+        let res = new Array();
+        if (right.dot(normal) <= left.dot(normal)) {
+            res.push(pointFarthestPoint);
+            res.push(prevIndice);
+            res.push(pointFarthestPoint);
+            return res;
+        }
+        else {
+            res.push(pointFarthestPoint);
+            res.push(pointFarthestPoint);
+            res.push(nextPoint);
+            return res;
+        }
+    }
+
+    findRefIncEdge(S2, normal) {
+
+        let e1 = this.findBestEdge(normal);
+        let e2 = S2.findBestEdge(normal.mul(-1));
+        let subE1 = e1[2].sub(e1[1]);
+        let subE2 = e2[2].sub(e2[1]);
+        let res = new Array();
+        if (Math.abs(subE1.dot(normal)) <= Math.abs(subE2.dot(normal))) {
+            res.push(false);
+            res.push(e1);
+            res.push(e2);
+            return res;
+        }
+        else {
+            res.push(true);
+            res.push(e2);
+            res.push(e1);
+            return res;
+        }
+
+    }
+
+    clip(v1, v2, refv, o) {
+        let clippedPoint = new Array();
+        let d1 = refv.dot(v1) - o;
+        let d2 = refv.dot(v2) - o;
+        if (d1 >= 0) {
+            clippedPoint.push(v1);
+        }
+        if (d2 >= 0) {
+            clippedPoint.push(v2);
+        }
+
+        if (d1 * d2 < 0) {
+            let e = v2.sub(v1);
+            let u = d1 / (d1 - d2);
+            e = e.mul(u).add(v1);
+            clippedPoint.push(e);
+        }
+        return clippedPoint;
+    }
+
+    findContactPoint(S2, normal) {
+        let tmp = this.findRefIncEdge(S2, normal);
+        let flip = tmp[0];
+
+        let ref = tmp[1];
+        let refMax = ref[0];
+        let ref_v1 = ref[1];
+        let ref_v2 = ref[2];
+
+        let inc = tmp[2];
+        let inc_v1 = inc[1];
+        let inc_v2 = inc[2];
+
+        let refSub = ref_v2.sub(ref_v1).normalize();
+
+        let o1 = refSub.dot(ref_v1);
+
+
+        let cp = this.clip(inc_v1, inc_v2, refSub, o1);
+        if (cp.length < 2) {new Array(); }
+
+
+        let o2 = refSub.dot(ref_v2);
+        cp = this.clip(cp[0], cp[1], refSub.mul(-1), -o2);
+        if (cp.length < 2) {new Array(); }
+
+
+        let refCross = refSub.rightHandRules();
+        let max = refCross.dot(refMax);
+        if (flip) { refCross = refCross.mul(-1); }
+
+        let finalContactPoint = new Array();
+        for (let i = 0; i < cp.length; ++i) {
+            let depth = refCross.dot(cp[i]) - max;
+            if (depth > 0) {
+                finalContactPoint.push(cp[i]);
+            }
+        }
+
+        return finalContactPoint;
     }
 
     draw(ctx) {

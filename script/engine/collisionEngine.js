@@ -77,6 +77,18 @@ class CollisionEngine {
             let objectB = collide[1];
             let normalCollision = collide[2][0];
             let penetrationDepth = collide[2][1];
+
+
+            /*
+                Array return by findContactPoint may be empty, check that for computeImpulsion.
+            */
+            let contactPoints;
+            try {
+                contactPoints = objectA.shape.findContactPoint(objectB.shape, normalCollision);
+            } catch (e) {
+                contactPoints = objectB.shape.findContactPoint(objectA.shape, normalCollision);
+            }
+
             this.computeImpulsion(objectA, objectB, normalCollision);
             this.positionalCorrection(objectA, objectB, penetrationDepth, normalCollision);
 
@@ -84,10 +96,17 @@ class CollisionEngine {
             let sumForceB = objectB.computeSecondLawNewton();
             let normalFA = new NormalForce(objectA.mass, objectA.acc, sumForceA);
             let normalFB = new NormalForce(objectB.mass, objectB.acc, sumForceB);
+
+
+            /*
+                Le calcul de la force normal à une collision n'est pas sur, elle n'est donc pas
+                implémenté.
+
+            objectA.collisionForce.push(normalFA);
+            objectB.collisionForce.push(normalFB);*/
+
             let frictionFA = new Friction(objectA.mass, normalFA.computeForce().norm(), objectA.speed);
             let frictionFB = new Friction(objectB.mass, normalFB.computeForce().norm(), objectB.speed);
-            /*objectA.collisionForce.push(normalFA);
-            objectB.collisionForce.push(normalFB);*/
             objectA.collisionForce.push(frictionFA);
             objectB.collisionForce.push(frictionFB);
         });
