@@ -54,7 +54,7 @@ function gameStep(ts) {
 
 requestAnimationFrame(gameStep);
 
-background_canvas.addEventListener("click", function (event) {
+/*background_canvas.addEventListener("click", function (event) {
     let widthRand = randomIntervalle(10, 80);
     let heightRand = randomIntervalle(10, 100);
     let newShape = new Rectangle(event.offsetX - camera.coordCamera.x, event.offsetY - camera.coordCamera.y, widthRand, heightRand);
@@ -62,13 +62,25 @@ background_canvas.addEventListener("click", function (event) {
     newGM.speed = new Vector2D(10, 0);
     game_object.push(newGM);
     ++i;
-});
+});*/
 
 document.addEventListener("wheel", event => {
     event.preventDefault();
 
     let newAngle = event.deltaY * -0.02;
     game_logic.rotateCannon(newAngle);
+
+});
+
+background_canvas.addEventListener("click", event => {
+    if (game_object[1] instanceof Boulet) {
+        game_object.splice(1, 1);
+    }
+    let beginVec = game_logic.cannon.shape.shapePoint[0];
+    let endvec = game_logic.cannon.shape.shapePoint[1];
+
+    let speedBall = endvec.sub(beginVec).normalize().mul(game_logic.cannon.powerCannon);
+    game_object.push(new Boulet(endvec.x, endvec.y + 10, speedBall));
 
 });
 

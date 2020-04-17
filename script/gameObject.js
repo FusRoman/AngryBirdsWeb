@@ -3,6 +3,8 @@ const GMcondition = Object.freeze({ "awake": 1, "sleeping": 2, "static": 3 });
 
 class GameObject extends Dynamics {
 
+
+    // Attention, l'id 0 est reservé au sol et l'id 1 au boulet de cannon
     constructor(shape, mass, restitution, condition, id) {
 
         /*let inertialMoment = -1;
@@ -30,12 +32,6 @@ class GameObject extends Dynamics {
 
     draw(context) {
         context.strokeStyle = "#000000";
-        if (this.condition == GMcondition.awake) {
-            context.strokeStyle = "#ff0000";
-        }
-        if (this.condition == GMcondition.sleeping) {
-            context.strokeStyle = "#00ff00";
-        }
         this.shape.draw(context);
     }
 
