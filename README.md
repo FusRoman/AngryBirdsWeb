@@ -17,3 +17,4 @@ e: augmenter puissance du canon +1
 e + shift: augmenter puissance du canon +5
 
 molette souris: monter/descendre le canon
+clique gauche souris: tirer au canon ( 1 boulet à la fois)
