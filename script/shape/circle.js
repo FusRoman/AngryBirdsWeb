@@ -5,6 +5,7 @@ class Circle extends Shape {
         p.push(new Vector2D(x, y));
         super(p);
         this.radius = radius;
+        this.diameter = this.radius * 2;
     }
 
     getFarthestPoint(direction) {

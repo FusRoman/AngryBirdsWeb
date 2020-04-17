@@ -7,6 +7,8 @@ class Rectangle extends Shape {
         arrayPoint.push(new Vector2D(x + width, y + heigth));
         arrayPoint.push(new Vector2D(x, y + heigth));
         super(arrayPoint);
+        this.width = width;
+        this.heigth = heigth;
     }
 
 }

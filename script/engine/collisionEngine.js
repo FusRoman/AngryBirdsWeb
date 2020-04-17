@@ -36,7 +36,58 @@ class CollisionEngine {
         return res;
     }
 
-    computeImpulsion(objectA, objectB, normalCollision) {
+    computeRotationalImpulsionFactor(objectA, objectB, ra, rb, normalCollision) {
+        let sumInvMass = objectA.invMass + objectB.invMass;
+
+        let j_a = 0;
+        let j_b = 0;
+        let relativeVelAlongNormal = objectB.speed.sub(objectA.speed).dot(normalCollision);
+
+        let numA = (-(1 + objectA.restitution)) * relativeVelAlongNormal;
+        let numB = (-(1 + objectB.restitution)) * relativeVelAlongNormal;
+
+        let crossProductA = ra.crossProduct2D(normalCollision);
+        let crossProductB = rb.crossProduct2D(normalCollision);
+        crossProductA *= objectA.invInertia;
+        crossProductB *= objectB.invInertia;
+        let denomA = ra.mul(crossProductA).rightHandRules();
+        let denomB = rb.mul(crossProductB).rightHandRules();
+        let denom = denomA.add(denomB).dot(normalCollision);
+        denom += sumInvMass;
+
+        j_a = numA / denom;
+        j_b = numB / denom;
+
+        let res = new Array();
+        res.push(j_a);
+        res.push(j_b);
+        return res;
+    }
+
+    impulsionWithRotation(objectA, objectB, normalCollision, contactPoint) {
+        let ra = contactPoint.sub(objectA.pos.centerOfMass);
+        let rb = contactPoint.sub(objectB.pos.centerOfMass);
+        let j = this.computeRotationalImpulsionFactor(objectA, objectB, ra, rb, normalCollision, contactPoint);
+        let j_a = j[0];
+        let j_b = j[1];
+
+        let newAngularSpeedA = normalCollision.mul(j_a);
+        let newAngularSpeedB = normalCollision.mul(j_b);
+        newAngularSpeedA = newAngularSpeedA.crossProduct2D(ra) * objectA.invInertia;
+        newAngularSpeedB = newAngularSpeedB.crossProduct2D(rb) * objectB.invInertia;
+        objectA.omega -= newAngularSpeedA;
+        objectB.omega += newAngularSpeedB;
+
+
+        let newLinearSpeedA = normalCollision.mul(j_a * objectA.invMass);
+        let newLinearSpeedB = normalCollision.mul(j_b * objectB.invMass);
+        objectA.speed = objectA.speed.sub(newLinearSpeedA);
+        objectB.speed = objectB.speed.add(newLinearSpeedB);
+
+    }
+
+    computeImpulsion(objectA, objectB, normalCollision, contactPoints) {
+        //if (contactPoints.length == 0) {
         let relativeVel = objectB.speed.sub(objectA.speed);
         let velocityAlongNormal = relativeVel.dot(normalCollision);
         if (velocityAlongNormal <= 0) {
@@ -48,11 +99,17 @@ class CollisionEngine {
             objectA.speed = objectA.speed.sub(impulseA);
             objectB.speed = objectB.speed.add(impulseB);
         }
+        //}
+        /* else {
+             contactPoints.forEach(cp => {
+                 this.impulsionWithRotation(objectA, objectB, normalCollision, cp);
+             });
+         }*/
     }
 
     positionalCorrection(objectA, objectB, penetrationDepth, normalCollision) {
         let sumInvMass = objectA.invMass + objectB.invMass;
-        let percent = 0.8;
+        let percent = 0.2;
         let slop = 0.01;
         let tmp = Math.max(penetrationDepth - slop, 0);
         tmp /= sumInvMass;
@@ -82,12 +139,7 @@ class CollisionEngine {
             /*
                 Array return by findContactPoint may be empty, check that for computeImpulsion.
             */
-            let contactPoints;
-            try {
-                contactPoints = objectA.shape.findContactPoint(objectB.shape, normalCollision);
-            } catch (e) {
-                contactPoints = objectB.shape.findContactPoint(objectA.shape, normalCollision);
-            }
+            //let contactPoints = objectA.shape.findContactPoint(objectB.shape, normalCollision);
 
             this.computeImpulsion(objectA, objectB, normalCollision);
             this.positionalCorrection(objectA, objectB, penetrationDepth, normalCollision);

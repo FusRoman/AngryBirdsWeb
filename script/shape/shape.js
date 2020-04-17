@@ -13,7 +13,15 @@ class Shape {
 
     constructor(p) {
         this.shapePoint = p;
+        let tmp = new Vector2D(0, 0);
+        this.shapePoint.forEach(point => {
+            tmp = tmp.add(point);
+        });
+
+        //this.centerOfMass = tmp.div(this.shapePoint.length);
+
         this.tolerance = 0.00001;
+        //this.inertiaTensor = -1;
     }
 
     getFarthestPoint(direction) {
@@ -234,17 +242,14 @@ class Shape {
         let inc_v2 = inc[2];
 
         let refSub = ref_v2.sub(ref_v1).normalize();
-
         let o1 = refSub.dot(ref_v1);
 
-
         let cp = this.clip(inc_v1, inc_v2, refSub, o1);
-        if (cp.length < 2) {new Array(); }
-
+        if (cp.length < 2) { return new Array(); }
 
         let o2 = refSub.dot(ref_v2);
         cp = this.clip(cp[0], cp[1], refSub.mul(-1), -o2);
-        if (cp.length < 2) {new Array(); }
+        if (cp.length < 2) { return new Array(); }
 
 
         let refCross = refSub.rightHandRules();
@@ -258,11 +263,11 @@ class Shape {
                 finalContactPoint.push(cp[i]);
             }
         }
-
         return finalContactPoint;
     }
 
     draw(ctx) {
+        //ctx.fillRect(this.centerOfMass.x, this.centerOfMass.y, 1, 1);
         ctx.beginPath();
         for (let i = 0; i < this.shapePoint.length - 1; i++) {
             ctx.moveTo(this.shapePoint[i].x, this.shapePoint[i].y);

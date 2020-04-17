@@ -2,52 +2,15 @@ let background_canvas = document.getElementById("background_canvas");
 let background_context = background_canvas.getContext("2d");
 let showFPS = document.getElementById("fpsCounter");
 
+
+
 let game_object = new Array();
+let game_logic = new GameLogic(game_object, background_context, 0);
+
+
+
 let camera = new Camera(background_context);
 let engine = new PhysicsEngine(game_object, background_context);
-
-
-//objet de jeu
-let circle1 = new Circle(500, 100, 100);
-let triangle1 = new Triangle(200, 100, 50, 100);
-let rectangle1 = new Rectangle(100, 100, 10, 300);
-let rectangle6 = new Rectangle(300, 100, 20, 100);
-
-//let gm2 = new GameObject(circle1, 0.05, 10, 2);
-let gm1 = new GameObject(rectangle1, 1, 0.2, GMcondition.awake, 1);
-let gm3 = new GameObject(triangle1, 1, 0.2, GMcondition.awake, 3);
-let gm8 = new GameObject(rectangle6, 1, 0.2, GMcondition.awake, 8);
-
-
-game_object.push(gm1);
-//game_object.push(gm2);
-game_object.push(gm3);
-game_object.push(gm8);
-
-
-//aire de jeu
-
-let epaisseurMur = 50
-let tailleEnceinte = 1000
-
-let rectangle2 = new Rectangle(0 - epaisseurMur, 0, epaisseurMur, tailleEnceinte);
-let rectangle3 = new Rectangle(3, 0, tailleEnceinte, epaisseurMur);
-let rectangle4 = new Rectangle(tailleEnceinte + 4, 0, epaisseurMur, tailleEnceinte);
-let rectangle5 = new Rectangle(0, tailleEnceinte + 2, tailleEnceinte + 4, epaisseurMur);
-
-
-let gm4 = new GameObject(rectangle2, 0, 0.2, GMcondition.static, 4);
-let gm5 = new GameObject(rectangle3, 0, 0.2, GMcondition.static, 5);
-let gm6 = new GameObject(rectangle4, 0, 0.2, GMcondition.static, 6);
-let gm7 = new GameObject(rectangle5, 0, 0.2, GMcondition.static, 7);
-
-
-game_object.push(gm4);
-game_object.push(gm5);
-game_object.push(gm6);
-game_object.push(gm7);
-
-
 
 
 let lastLoop = performance.now();
@@ -79,6 +42,7 @@ function gameStep(ts) {
     background_context.clearRect(0 - camera.coordCamera.x, 0 - camera.coordCamera.y, background_canvas.width, background_canvas.height);
 
     camera.continuousCamera();
+    game_logic.drawCannon();
 
     engine.renderEngine();
     engine.applyPhysics();
@@ -91,11 +55,21 @@ function gameStep(ts) {
 requestAnimationFrame(gameStep);
 
 background_canvas.addEventListener("click", function (event) {
-    let newShape = new Rectangle(100, 100, 20, 50);
+    let widthRand = randomIntervalle(10, 80);
+    let heightRand = randomIntervalle(10, 100);
+    let newShape = new Rectangle(event.offsetX - camera.coordCamera.x, event.offsetY - camera.coordCamera.y, widthRand, heightRand);
     let newGM = new GameObject(newShape, 1, Math.random(), GMcondition.awake, i);
-    newGM.speed = new Vector2D(10, -50);
+    newGM.speed = new Vector2D(10, 0);
     game_object.push(newGM);
     ++i;
+});
+
+document.addEventListener("wheel", event => {
+    event.preventDefault();
+
+    let newAngle = event.deltaY * -0.02;
+    game_logic.rotateCannon(newAngle);
+
 });
 
 document.addEventListener("keydown", function (event) {
