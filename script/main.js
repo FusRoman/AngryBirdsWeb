@@ -73,6 +73,14 @@ document.addEventListener("wheel", event => {
 });
 
 document.addEventListener("keydown", function (event) {
+    if (event.keyCode == 69) {
+        if (event.shiftKey) {
+            game_logic.cannon.updateTwicePowerCannon();
+        }
+        else {
+            game_logic.cannon.updatePowerCannon();
+        }
+    }
     camera.cameraActionKeydown(event);
 });
 

@@ -1,0 +1,5 @@
+class Boulet extends GameObject {
+
+    
+
+}

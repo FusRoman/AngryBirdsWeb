@@ -32,6 +32,8 @@ class Dynamics {
             this.invInertia = 1 / this.inertialMoment;
         }
 
+        this.lastEnergy = this.computeKineticEnergy();
+
 
         this.environmentalForce = new Array();
         this.environmentalForce.push(new Gravity(this.mass));
@@ -128,11 +130,21 @@ class Dynamics {
         return torque;
     }*/
 
+    computeKineticEnergy() {
+        return this.speed.mul(0.5 * this.mass);
+    }
+
     applyKineticLawOfmotion(deltaT) {
         if (this.condition == GMcondition.awake) {
+            let lastKE = this.computeKineticEnergy();
             this.updatePos(deltaT);
             this.updateAcc();
             this.updateSpeed(deltaT);
+            let sub = this.computeKineticEnergy().sub(lastKE);
+            /*if(this.lastEnergy.norm() === sub.norm()){
+                this.condition = GMcondition.sleeping;
+            }*/
+            this.lastEnergy = sub;
         }
     }
 }
