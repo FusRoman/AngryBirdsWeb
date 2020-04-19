@@ -1,4 +1,7 @@
 {
-    "background" : "/home/fusroman/Documents/Informatique_et_Programmation/Programmation_Web/projet/ressource/Glitch parallex BG sampler/GA9NRNJSB792OG4 Akaki Cape-shows depth/LA9NRNJSB792OG4_main_1313432557.jpg"
+    "id" : "level3",
+    "background" : "../ressource/level/level3/background/background.jpg",
+    "cannon_pos" : ["20","20"]
     
+
 }

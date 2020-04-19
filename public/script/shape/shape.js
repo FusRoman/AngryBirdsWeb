@@ -227,7 +227,7 @@ class Shape {
         }
         return clippedPoint;
     }
-
+    
     findContactPoint(S2, normal) {
         let tmp = this.findRefIncEdge(S2, normal);
         let flip = tmp[0];

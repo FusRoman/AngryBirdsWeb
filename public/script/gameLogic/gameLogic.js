@@ -1,6 +1,6 @@
 class GameLogic {
 
-    constructor(gameObject, context, nbTarget) {
+    constructor(gameObject, context, nbTarget, nbShoot) {
         this.hGround = 500;
         let groundShape = new Rectangle(-1000, this.hGround, 6000, 100);
         this.ground = new GameObject(groundShape, 0, 0.1, GMcondition.static, 0);
@@ -15,12 +15,44 @@ class GameLogic {
 
         this.victoryPoint = 0;
         this.nbTarget = nbTarget;
+        this.nbShoot = nbShoot;
 
     }
 
+    youLoose(){
+        return 0;
+    }
+
+    youWon(){
+        return 1;
+    }
+
+    drawInfo(ctx, cameraX, cameraY) {
+        ctx.strokeStyle = "#000000";
+        ctx.fillStyle = "#000000";
+        ctx.fillText("Nombre de Tir restant : " + this.nbShoot, 40 - cameraX, 50 - cameraY);
+        ctx.fillText("Nombre d'ennemis restant : " + this.nbTarget, 40 - cameraX, 100 - cameraY);
+    }
+
     updateGame() {
+        for(let i=0; i < this.gameObject.length; i++){
+            if(this.gameObject[i].life_point==0){
+                if(this.gameObject[i] instanceof Target){
+                    this.nbTarget--;
+                }
+                gameObject.splice(i,1);                
+            }
+        }
+        if(this.nbTarget == 0){
+            this.youWon();
+        }
+        if(this.nbShoot == 0 && this.nbTarget != 0 ){
+            this.youLoose();
+        }
         this.camera.continuousCamera();
+        this.drawInfo(this.context,this.camera.coordCamera.x,this.camera.coordCamera.y);
         this.cannon.draw(this.context, this.camera.coordCamera.x, this.camera.coordCamera.y);
+                
     }
 
     rotateCannon(angle) {

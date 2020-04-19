@@ -5,7 +5,7 @@ let showFPS = document.getElementById("fpsCounter");
 
 
 let game_object = new Array();
-let game_logic = new GameLogic(game_object, background_context, 0);
+let game_logic = new GameLogic(game_object, background_context, 0, 10);
 let engine = new PhysicsEngine(game_object, background_context);
 
 
@@ -15,9 +15,14 @@ let fps = 0;
 background_context.font = "30px Arial";
 
 /*
+Pour tester des fonctions
+*/
+//loadFromServer("loadLevel.js");
+
+
+/*
 Fonction permettant de calculer le framerate du canvas
 */
-
 
 function fpsCounter() {
     counter += 1;
@@ -34,6 +39,7 @@ function fpsCounter() {
 Fonction appelé à chaque rafraichissement du navigateur
 */
 function gameStep(ts) {
+
     background_context.clearRect(0 - game_logic.camera.coordCamera.x, 0 - game_logic.camera.coordCamera.y, background_canvas.width, background_canvas.height);
 
     game_logic.updateGame();
@@ -48,6 +54,7 @@ function gameStep(ts) {
 
 requestAnimationFrame(gameStep);
 
+
 document.addEventListener("wheel", event => {
     event.preventDefault();
 
@@ -59,6 +66,9 @@ background_canvas.addEventListener("click", event => {
     if (game_object[1] instanceof Boulet) {
         game_object.splice(1, 1);
     }
+
+    game_logic.nbShoot--;
+
     let beginVec = game_logic.cannon.shape.shapePoint[0];
     let endvec = game_logic.cannon.shape.shapePoint[1];
 

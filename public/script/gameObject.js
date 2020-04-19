@@ -5,7 +5,7 @@ class GameObject extends Dynamics {
 
 
     // Attention, l'id 0 est reservé au sol et l'id 1 au boulet de cannon
-    constructor(shape, mass, restitution, condition, id) {
+    constructor(shape, mass, restitution, condition, id,life_point) {
 
         /*let inertialMoment = -1;
         if (shape instanceof Rectangle) {
@@ -22,8 +22,18 @@ class GameObject extends Dynamics {
 
 
         this.id = id; // id of the gameObject, must be unique for each gameObject to perform the equal method
-        this.shape = shape // rigid body object
+        this.shape = shape; // rigid body object
+        this.life_point = life_point; // Life point of any object except cannon bill (Of course xD)
 
+    }
+
+    updateLifePoint(degats){
+        if(this.life_point-degats<=0){
+            this.life_point=0;
+        }
+        else{
+            this.life_point=this.life_point-degats;
+        }
     }
 
     equal(gm) {
