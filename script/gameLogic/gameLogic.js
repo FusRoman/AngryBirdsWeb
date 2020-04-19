@@ -33,7 +33,6 @@ class GameLogic {
         ctx.fillStyle = "#000000";
         ctx.fillText("Nombre de Tir restant : " + this.nbShoot, 40 - cameraX, 50 - cameraY);
         ctx.fillText("Nombre d'ennemis restant : " + this.nbTarget, 40 - cameraX, 100 - cameraY);
-        ctx.fillText("Score : " + this.nbTarget, 800 - cameraX, 50 - cameraY);
     }
 
     updateGame() {
