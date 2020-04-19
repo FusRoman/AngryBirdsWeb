@@ -6,10 +6,6 @@ let showFPS = document.getElementById("fpsCounter");
 
 let game_object = new Array();
 let game_logic = new GameLogic(game_object, background_context, 0);
-
-
-
-let camera = new Camera(background_context);
 let engine = new PhysicsEngine(game_object, background_context);
 
 
@@ -22,7 +18,6 @@ background_context.font = "30px Arial";
 Fonction permettant de calculer le framerate du canvas
 */
 
-let i = 20;
 
 function fpsCounter() {
     counter += 1;
@@ -30,7 +25,7 @@ function fpsCounter() {
     lastLoop = performance.now();
     fps = Math.round(1 / delta);
     if (counter == 30) {
-        showFPS.innerHTML = "fps : " + fps + "</br>time elapsed : " + delta * 1000 + " ms" + "</br>nombre d'objet : " + ((i - 20) + 3);
+        showFPS.innerHTML = "fps : " + fps + "</br>time elapsed : " + delta * 1000 + " ms";
         counter = 0;
     }
 }
@@ -39,10 +34,9 @@ function fpsCounter() {
 Fonction appelé à chaque rafraichissement du navigateur
 */
 function gameStep(ts) {
-    background_context.clearRect(0 - camera.coordCamera.x, 0 - camera.coordCamera.y, background_canvas.width, background_canvas.height);
+    background_context.clearRect(0 - game_logic.camera.coordCamera.x, 0 - game_logic.camera.coordCamera.y, background_canvas.width, background_canvas.height);
 
-    camera.continuousCamera();
-    game_logic.drawCannon();
+    game_logic.updateGame();
 
     engine.renderEngine();
     engine.applyPhysics();
@@ -54,22 +48,11 @@ function gameStep(ts) {
 
 requestAnimationFrame(gameStep);
 
-/*background_canvas.addEventListener("click", function (event) {
-    let widthRand = randomIntervalle(10, 80);
-    let heightRand = randomIntervalle(10, 100);
-    let newShape = new Rectangle(event.offsetX - camera.coordCamera.x, event.offsetY - camera.coordCamera.y, widthRand, heightRand);
-    let newGM = new GameObject(newShape, 1, Math.random(), GMcondition.awake, i);
-    newGM.speed = new Vector2D(10, 0);
-    game_object.push(newGM);
-    ++i;
-});*/
-
 document.addEventListener("wheel", event => {
     event.preventDefault();
 
     let newAngle = event.deltaY * -0.02;
     game_logic.rotateCannon(newAngle);
-
 });
 
 background_canvas.addEventListener("click", event => {
@@ -79,9 +62,8 @@ background_canvas.addEventListener("click", event => {
     let beginVec = game_logic.cannon.shape.shapePoint[0];
     let endvec = game_logic.cannon.shape.shapePoint[1];
 
-    let speedBall = endvec.sub(beginVec).normalize().mul(game_logic.cannon.powerCannon);
+    let speedBall = endvec.sub(beginVec).normalize().mul(game_logic.cannon.powerCannon * 1.5);
     game_object.push(new Boulet(endvec.x, endvec.y + 10, speedBall));
-
 });
 
 document.addEventListener("keydown", function (event) {
@@ -93,9 +75,9 @@ document.addEventListener("keydown", function (event) {
             game_logic.cannon.updatePowerCannon();
         }
     }
-    camera.cameraActionKeydown(event);
+    game_logic.camera.cameraActionKeydown(event);
 });
 
 document.addEventListener("keyup", function (event) {
-    camera.cameraActionKeyup(event);
+    game_logic.camera.cameraActionKeyup(event);
 });
