@@ -19,6 +19,12 @@ let fps = 0;
 background_context.font = "30px Arial";
 
 /*
+Pour tester des fonctions
+*/
+//loadFromServer("loadLevel.js");
+
+
+/*
 Fonction permettant de calculer le framerate du canvas
 */
 
@@ -63,6 +69,8 @@ requestAnimationFrame(gameStep);
     game_object.push(newGM);
     ++i;
 });*/
+
+
 
 document.addEventListener("wheel", event => {
     event.preventDefault();

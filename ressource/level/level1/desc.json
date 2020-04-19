@@ -1,3 +1,7 @@
 {
-    "background" : "../ressource/level/level1/background/background.jpg" 
+    "id" : "level1",
+    "background" : "../ressource/level/level1/background/background.jpg",
+    "ennemy" : { "id" : 1 , "x" : 50 , "y" : 60 },
+    "item" : { "id" : 2 , "type" : "bois", "resiste" : 0.2, "x" : 50 , "y" : 60 }
 }
+
