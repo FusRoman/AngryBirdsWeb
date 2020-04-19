@@ -27,6 +27,13 @@ class GameLogic {
         return 1;
     }
 
+    drawInfo(ctx, cameraX, cameraY) {
+        ctx.strokeStyle = "#000000";
+        ctx.fillStyle = "#000000";
+        ctx.fillText("Nombre de Tir restant : " + this.nbShoot, 40 - cameraX, 50 - cameraY);
+        ctx.fillText("Nombre d'ennemis restant : " + this.nbTarget, 40 - cameraX, 100 - cameraY);
+    }
+
     updateGame() {
         for(let i=0; i < this.gameObject.length; i++){
             if(this.gameObject[i].life_point==0){
@@ -37,12 +44,13 @@ class GameLogic {
             }
         }
         if(this.nbTarget == 0){
-            youWon();
+            this.youWon();
         }
         if(this.nbShoot == 0 && this.nbTarget != 0 ){
             this.youLoose();
         }
         this.camera.continuousCamera();
+        this.drawInfo(this.context,this.camera.coordCamera.x,this.camera.coordCamera.y);
         this.cannon.draw(this.context, this.camera.coordCamera.x, this.camera.coordCamera.y);
                 
     }
