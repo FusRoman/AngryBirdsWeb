@@ -1,6 +1,6 @@
 class GameLogic {
 
-    constructor(gameObject, context, nbTarget, nbShoot) {
+    constructor(gameObject, context, nbTarget, nbShoot,score) {
         this.hGround = 500;
         let groundShape = new Rectangle(-1000, this.hGround, 6000, 100);
         this.ground = new GameObject(groundShape, 0, 0.1, GMcondition.static, 0);
@@ -16,15 +16,16 @@ class GameLogic {
         this.victoryPoint = 0;
         this.nbTarget = nbTarget;
         this.nbShoot = nbShoot;
+        this.score = score;
 
     }
 
     youLoose(){
-        return 0;
+        return this.score;
     }
 
     youWon(){
-        return 1;
+        return this.score;
     }
 
     drawInfo(ctx, cameraX, cameraY) {
@@ -44,6 +45,7 @@ class GameLogic {
             }
         }
         if(this.nbTarget == 0){
+            this.score=this.score + 500 * this.nbShoot;
             this.youWon();
         }
         if(this.nbShoot == 0 && this.nbTarget != 0 ){

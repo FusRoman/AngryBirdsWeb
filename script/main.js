@@ -5,7 +5,7 @@ let showFPS = document.getElementById("fpsCounter");
 
 
 let game_object = new Array();
-let game_logic = new GameLogic(game_object, background_context, 0, 10);
+let game_logic = new GameLogic(game_object, background_context, 0, 10, 0);
 let engine = new PhysicsEngine(game_object, background_context);
 
 
