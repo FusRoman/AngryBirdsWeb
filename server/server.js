@@ -1,6 +1,6 @@
-var static = require('node-static');
+const static = require('node-static');
 
-var fileServer = new static.Server('./public', { indexFile: "AngryBirds.html" });
+const fileServer = new static.Server('./public', { indexFile: "AngryBirds.html" });
 
 require('http').createServer(function (request, response) {
     request.addListener('end', function () {
