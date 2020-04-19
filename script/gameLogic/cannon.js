@@ -46,25 +46,18 @@ class Cannon {
         this.powerCannon += 5 * this.flip;
     }
 
-    draw(ctx) {
+    draw(ctx, cameraX, cameraY) {
         ctx.strokeStyle = "#000000";
         this.supportCannon.draw(ctx);
         this.shape.draw(ctx);
 
-        let hauteurJaugePuissance = 120;
-        let decalageX = 100;
+        ctx.fillText("puissance du canon : " + this.powerCannon, 10 - cameraX, 150 - cameraY);
 
-        let xJauge = this.xCannon - decalageX;
-        let yjauge = this.ground - hauteurJaugePuissance;
-        let finxjauge = xJauge;
-
-        ctx.fillText("puissance du canon : " + this.powerCannon, this.xCannon - 450, this.ground - 20);
-
-        var grd = ctx.createLinearGradient(xJauge, yjauge, finxjauge, yjauge + 1 + ((this.powerCannon)*2));
+        var grd = ctx.createLinearGradient(10 - cameraX, 10 - cameraY, 10 - cameraX, (10 - cameraY) + 1 + ((this.powerCannon)*2));
         grd.addColorStop(0, "red");
         grd.addColorStop(1, "green");
         ctx.fillStyle = grd;
-        ctx.fillRect(xJauge, yjauge, 20, 100);
+        ctx.fillRect(10 - cameraX, 10 - cameraY, 20, 100);
     }
 
 }

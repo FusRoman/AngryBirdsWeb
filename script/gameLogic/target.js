@@ -6,6 +6,10 @@ class Target extends GameObject {
         this.life_point=life_point;
     }
 
-    
+    updateLifePoint(){
+        if(){
+
+        }
+    }
 
 }
