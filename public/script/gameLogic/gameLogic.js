@@ -25,7 +25,7 @@ class GameLogic {
         this.camera = new Camera(this.context);
         this.cannon = new Cannon(this.hGround);
 
-        this.victoryPoint = 0;
+        this.score = 0;
 
         this.lastLoop = performance.now();
         this.counter = 0;
@@ -46,6 +46,7 @@ class GameLogic {
                 if (this.gameObject[i].life_point == 0) {
                     if (this.gameObject[i] instanceof Target) {
                         this.nbTarget--;
+                        this.score += this.gameObject[i].score;
                     }
                     objectToRemove.push(i);
                 }
@@ -54,9 +55,9 @@ class GameLogic {
                 this.gameObject.splice(i, 1);
             });
 
-            
+
             if (this.nbTarget == 0) {
-                this.score = this.score + 500 * this.nbShoot;
+                //this.score = this.score + 500 * this.nbShoot;
                 this.youWon();
             }
             if (this.nbShoot == 0 && this.nbTarget != 0) {
@@ -122,6 +123,15 @@ class GameLogic {
         return res;
     }
 
+    createTarget(targetdescription, id) {
+        let x = targetdescription["x"];
+        let y = targetdescription["y"];
+        let lpTarget = targetdescription["lp"];
+        let radiusTarget = targetdescription["radius"];
+        let score = targetdescription["score"];
+        return new Target(id, lpTarget, score, x, y, radiusTarget);
+    }
+
     newMenuButton(menu, specificLevelDesc) {
         let newButton = document.createElement("button");
         newButton.setAttribute("id", specificLevelDesc["path"]);
@@ -137,10 +147,17 @@ class GameLogic {
             loadFromServer(path).then((value) => {
                 let levelDesc = JSON.parse(value);
                 let wall = levelDesc["wall"];
+                let target = levelDesc["target"];
                 let id = 3;
+                mySelf.nbTarget = target.length;
+                target.forEach(target => {
+                    let newTarget = mySelf.createTarget(target, id);
+                    mySelf.gameObject.push(newTarget);
+                    ++id;
+                });
                 wall.forEach((wall) => {
-                    let newObject = mySelf.createWall(wall, id);
-                    mySelf.gameObject.push(newObject);
+                    let newWall = mySelf.createWall(wall, id);
+                    mySelf.gameObject.push(newWall);
                     ++id;
                 });
             });
@@ -196,7 +213,7 @@ class GameLogic {
         ctx.fillText("puissance du canon : " + this.cannon.powerCannon, 10 - cameraX, 150 - cameraY);
         ctx.fillText("Nombre de Tir restant : " + this.nbShoot, 40 - cameraX, 50 - cameraY);
         ctx.fillText("Nombre de cible restante : " + this.nbTarget, 40 - cameraX, 100 - cameraY);
-        ctx.fillText("Score : " + this.nbTarget, 800 - cameraX, 50 - cameraY);
+        ctx.fillText("Score : " + this.score, 800 - cameraX, 50 - cameraY);
 
         if (this.showFPS) {
             this.fpsCounter(cameraX, cameraY);

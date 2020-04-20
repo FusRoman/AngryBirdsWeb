@@ -135,10 +135,10 @@ class CollisionEngine {
             let normalCollision = collide[2][0];
             let penetrationDepth = collide[2][1];
 
-            let kineticEnergyofA = objectA.computeKineticEnergy(normalCollision);
-            let kineticEnergyofB = objectB.computeKineticEnergy(normalCollision);
-            objectA.takeDamage(kineticEnergyofB / 100);
-            objectB.takeDamage(kineticEnergyofA / 100);
+            let kineticEnergyofA = objectA.computeKineticEnergy(objectB, normalCollision);
+            let kineticEnergyofB = objectB.computeKineticEnergy(objectA, normalCollision);
+            objectA.takeDamage(kineticEnergyofB / 250);
+            objectB.takeDamage(kineticEnergyofA / 250);
 
 
             /*

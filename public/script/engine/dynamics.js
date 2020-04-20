@@ -138,9 +138,11 @@ class Dynamics {
         return torque;
     }*/
 
-    computeKineticEnergy(normal) {
-        if (this.speed.dot(normal) > 1) {
-            return this.speed.norm() * 0.5 * this.mass;
+    computeKineticEnergy(otherObj, normal) {
+        let diffSpeed = otherObj.speed.sub(this.speed);
+        let dot = diffSpeed.dot(normal);
+        if (dot >= 1) {
+            return dot * 0.5 * otherObj.mass;
         }
         else{
             return 0;
