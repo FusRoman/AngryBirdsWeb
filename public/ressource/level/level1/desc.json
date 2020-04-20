@@ -1,7 +1,37 @@
 {
-    "id" : "level1",
-    "background" : "../ressource/level/level1/background/background.jpg",
-    "ennemy" : { "id" : 1 , "x" : 50 , "y" : 60 },
-    "item" : { "id" : 2 , "type" : "bois", "resiste" : 0.2, "x" : 50 , "y" : 60 }
+    "target": [
+        {
+            "x": 150,
+            "y": 20
+        }
+    ],
+    "wall": [
+        {
+            "type": "rectangle",
+            "x": 300,
+            "y": 60,
+            "width": 20,
+            "height": 50,
+            "mass": 200,
+            "restitution": 0.5
+        },
+        {
+            "type": "rectangle",
+            "x": 400,
+            "y": 60,
+            "width": 20,
+            "height": 50,
+            "mass": 200,
+            "restitution": 0.5
+        },
+        {
+            "type": "triangle",
+            "x": 300,
+            "y": 70,
+            "base": 120,
+            "hauteur": 20,
+            "mass": 150,
+            "restitution": 0.3
+        }
+    ]
 }
-

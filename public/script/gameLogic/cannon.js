@@ -46,18 +46,10 @@ class Cannon {
         this.powerCannon += 5 * this.flip;
     }
 
-    draw(ctx, cameraX, cameraY) {
+    draw(ctx) {
         ctx.strokeStyle = "#000000";
         this.supportCannon.draw(ctx);
         this.shape.draw(ctx);
-
-        ctx.fillText("puissance du canon : " + this.powerCannon, 10 - cameraX, 150 - cameraY);
-
-        var grd = ctx.createLinearGradient(10 - cameraX, 10 - cameraY, 10 - cameraX, (10 - cameraY) + 1 + ((this.powerCannon)*2));
-        grd.addColorStop(0, "red");
-        grd.addColorStop(1, "green");
-        ctx.fillStyle = grd;
-        ctx.fillRect(10 - cameraX, 10 - cameraY, 20, 100);
     }
 
 }

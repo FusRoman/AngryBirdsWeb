@@ -21,7 +21,7 @@ function loadFromServer(url) {
             }
         });
 
-        let path = "http://localhost:8000/";
+        let path = "/ressource/";
         xhr.open("GET", path + url);
         xhr.send();
     });
