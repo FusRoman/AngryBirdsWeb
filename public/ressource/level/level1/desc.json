@@ -8,8 +8,8 @@
     "wall": [
         {
             "type": "rectangle",
-            "x": 300,
-            "y": 60,
+            "x": 500,
+            "y": 450,
             "width": 20,
             "height": 50,
             "mass": 200,
@@ -17,8 +17,8 @@
         },
         {
             "type": "rectangle",
-            "x": 400,
-            "y": 60,
+            "x": 600,
+            "y": 450,
             "width": 20,
             "height": 50,
             "mass": 200,
@@ -26,8 +26,8 @@
         },
         {
             "type": "triangle",
-            "x": 300,
-            "y": 70,
+            "x": 500,
+            "y": 450,
             "base": 120,
             "hauteur": 20,
             "mass": 150,

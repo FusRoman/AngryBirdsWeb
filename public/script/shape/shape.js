@@ -269,11 +269,13 @@ class Shape {
     draw(ctx) {
         //ctx.fillRect(this.centerOfMass.x, this.centerOfMass.y, 1, 1);
         ctx.beginPath();
-        for (let i = 0; i < this.shapePoint.length - 1; i++) {
-            ctx.moveTo(this.shapePoint[i].x, this.shapePoint[i].y);
-            ctx.lineTo(this.shapePoint[i + 1].x, this.shapePoint[i + 1].y);
+        ctx.moveTo(this.shapePoint[0].x, this.shapePoint[0].y);
+        for (let i = 1; i < this.shapePoint.length; i++) {
+            ctx.lineTo(this.shapePoint[i].x, this.shapePoint[i].y);
         }
         ctx.lineTo(this.shapePoint[0].x, this.shapePoint[0].y);
+        ctx.closePath();
+        ctx.fill();
         ctx.stroke();
     }
 }

@@ -36,7 +36,7 @@ class CollisionEngine {
         return res;
     }
 
-    computeRotationalImpulsionFactor(objectA, objectB, ra, rb, normalCollision) {
+    /*computeRotationalImpulsionFactor(objectA, objectB, ra, rb, normalCollision) {
         let sumInvMass = objectA.invMass + objectB.invMass;
 
         let j_a = 0;
@@ -84,7 +84,7 @@ class CollisionEngine {
         objectA.speed = objectA.speed.sub(newLinearSpeedA);
         objectB.speed = objectB.speed.add(newLinearSpeedB);
 
-    }
+    }*/
 
     computeImpulsion(objectA, objectB, normalCollision, contactPoints) {
         //if (contactPoints.length == 0) {
@@ -134,6 +134,11 @@ class CollisionEngine {
             let objectB = collide[1];
             let normalCollision = collide[2][0];
             let penetrationDepth = collide[2][1];
+
+            let kineticEnergyofA = objectA.computeKineticEnergy(normalCollision);
+            let kineticEnergyofB = objectB.computeKineticEnergy(normalCollision);
+            objectA.takeDamage(kineticEnergyofB / 100);
+            objectB.takeDamage(kineticEnergyofA / 100);
 
 
             /*

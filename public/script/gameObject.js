@@ -3,9 +3,8 @@ const GMcondition = Object.freeze({ "awake": 1, "sleeping": 2, "static": 3 });
 
 class GameObject extends Dynamics {
 
-
-    // Attention, l'id 0 est reservé au sol et l'id 1 au boulet de cannon
-    constructor(shape, mass, restitution, condition, id,life_point) {
+    //Id 0 is reserved by the ground, id 1 by the limitWall and id 2 by the cannon ball
+    constructor(shape, mass, restitution, condition, id, life_point) {
 
         /*let inertialMoment = -1;
         if (shape instanceof Rectangle) {
@@ -23,17 +22,24 @@ class GameObject extends Dynamics {
 
         this.id = id; // id of the gameObject, must be unique for each gameObject to perform the equal method
         this.shape = shape; // rigid body object
-        this.life_point = life_point; // Life point of any object except cannon bill (Of course xD)
+        this.life_point = life_point; // Life point of any object except cannon ball
+
+        this.hasTakenDamage = false;
 
     }
 
-    updateLifePoint(degats){
-        if(this.life_point-degats<=0){
-            this.life_point=0;
+    updateLifePoint(damage) {
+        if (this.life_point - damage <= 0) {
+            this.life_point = 0;
         }
-        else{
-            this.life_point=this.life_point-degats;
+        else {
+            this.life_point -= damage;
         }
+    }
+
+    takeDamage(damage) {
+        this.updateLifePoint(damage);
+        this.hasTakenDamage = true;
     }
 
     equal(gm) {
@@ -41,8 +47,18 @@ class GameObject extends Dynamics {
     }
 
     draw(context) {
-        context.strokeStyle = "#000000";
-        this.shape.draw(context);
+        if (this.condition === GMcondition.awake) {
+            let red = 255 - (255 * (this.life_point / 100));
+            let green = 255 * (this.life_point / 100);
+            context.fillStyle = "rgb(" + red + ", " + green + ", 0)";
+            context.strokeStyle = "#000000";
+            this.shape.draw(context);
+        }
+        else{
+            context.fillStyle = "#ffffff";
+            context.strokeStyle = "#000000";
+            this.shape.draw(context);
+        }
     }
 
 }

@@ -32,7 +32,7 @@ class Dynamics {
             this.invInertia = 1 / this.inertialMoment;
         }
 
-        this.lastEnergy = this.computeKineticEnergy();
+        //this.lastEnergy = this.computeKineticEnergy();
 
 
         this.environmentalForce = new Array();
@@ -68,9 +68,14 @@ class Dynamics {
     updatePos(deltaT) {
 
         // update translation movement
+        //console.log("avant : ", this.speed);
         let withSpeed = this.speed.mul(deltaT);
+        //console.log("apres : ", withSpeed);
+        //console.log("acc avant : ");
         let withAcc = this.acc.mul(0.5).mul(deltaT * deltaT);
+        //console.log("acc : ", withAcc);
         let newPos = withSpeed.add(withAcc);
+        //console.log("pos : ", newPos);
 
         //update rotation movement
         /*let withAngularSpeed = this.omega * deltaT;
@@ -92,7 +97,10 @@ class Dynamics {
     updateSpeed(deltaT) {
         //update translation speed
         this.speed = this.speed.add(this.acc.mul(deltaT));
-
+        if (this.speed.norm() < 0.8) {
+            this.speed = new Vector2D(0, 0);
+        }
+        //console.log("dynamics speed : " , this.speed);
         //update rotation speed
         //this.omega = this.omega + this.alpha * deltaT;
     }
@@ -130,21 +138,26 @@ class Dynamics {
         return torque;
     }*/
 
-    computeKineticEnergy() {
-        return this.speed.mul(0.5 * this.mass);
+    computeKineticEnergy(normal) {
+        if (this.speed.dot(normal) > 1) {
+            return this.speed.norm() * 0.5 * this.mass;
+        }
+        else{
+            return 0;
+        }
     }
 
     applyKineticLawOfmotion(deltaT) {
         if (this.condition == GMcondition.awake) {
-            let lastKE = this.computeKineticEnergy();
+            //let lastKE = this.computeKineticEnergy();
             this.updatePos(deltaT);
             this.updateAcc();
             this.updateSpeed(deltaT);
-            let sub = this.computeKineticEnergy().sub(lastKE);
-            /*if(this.lastEnergy.norm() === sub.norm()){
+            //let sub = this.computeKineticEnergy().sub(lastKE);
+            /*if(this.speed.norm() === 0){
                 this.condition = GMcondition.sleeping;
             }*/
-            this.lastEnergy = sub;
+            //this.lastEnergy = sub;
         }
     }
 }

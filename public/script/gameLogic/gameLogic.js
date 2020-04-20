@@ -1,18 +1,22 @@
 class GameLogic {
 
-    constructor(canvas, context) {
+    constructor(canvas, context, menu) {
         this.context = context;
         this.context.font = "20px serif";
         this.canvas = canvas;
+        this.menu = menu;
 
         this.leftGame();
 
         this.hGround = 500;
         let groundShape = new Rectangle(-1000, this.hGround, 6000, 100);
         this.ground = new GameObject(groundShape, 0, 0.1, GMcondition.static, 0);
+        let limitWall = new Rectangle(1000, -1000, 100, 1500);
+        this.gmLimitWall = new GameObject(limitWall, 0, 0.1, GMcondition.static, 1);
 
         this.gameObject = new Array();
         this.gameObject.push(this.ground);
+        this.gameObject.push(this.gmLimitWall);
 
         this.engine = new PhysicsEngine(this.gameObject, this.context);
         this.controleur = new GameControleur(this);
@@ -35,14 +39,22 @@ class GameLogic {
         if (this.isInGame) {
             this.clearContext();
 
+            let objectToRemove = new Array();
+
             for (let i = 0; i < this.gameObject.length; i++) {
+                this.gameObject[i].hasTakenDamage = false;
                 if (this.gameObject[i].life_point == 0) {
                     if (this.gameObject[i] instanceof Target) {
                         this.nbTarget--;
                     }
-                    gameObject.splice(i, 1);
+                    objectToRemove.push(i);
                 }
             }
+            objectToRemove.forEach(i => {
+                this.gameObject.splice(i, 1);
+            });
+
+            
             if (this.nbTarget == 0) {
                 this.score = this.score + 500 * this.nbShoot;
                 this.youWon();
@@ -50,12 +62,13 @@ class GameLogic {
             if (this.nbShoot == 0 && this.nbTarget != 0) {
                 this.youLoose();
             }
-            this.camera.continuousCamera();
-            this.drawInfo(this.context, this.camera.coordCamera.x, this.camera.coordCamera.y);
             this.cannon.draw(this.context);
 
             this.engine.renderEngine();
             this.engine.applyPhysics();
+
+            this.camera.continuousCamera();
+            this.drawInfo(this.context, this.camera.coordCamera.x, this.camera.coordCamera.y);
         }
     }
 
@@ -66,11 +79,13 @@ class GameLogic {
     enterLevel() {
         this.isInGame = true;
         this.canvas.style.display = "initial";
+        this.menu.style.display = "none";
     }
 
     leftGame() {
         this.isInGame = false;
         this.canvas.style.display = "none";
+        this.menu.style.display = "initial";
     }
 
     createRectWall(descJsonWall, id) {
@@ -78,9 +93,6 @@ class GameLogic {
         let y = descJsonWall["y"];
         let width = descJsonWall["width"];
         let height = descJsonWall["height"];
-        console.log(id);
-        console.log(width);
-        console.log(height);
         let mass = descJsonWall["mass"];
         let restitution = descJsonWall["restitution"];
         let rect = new Rectangle(x, y, width, height);
@@ -171,7 +183,6 @@ class GameLogic {
     }
 
     drawInfo(ctx, cameraX, cameraY) {
-        ctx.fillText("puissance du canon : " + this.cannon.powerCannon, 10 - cameraX, 150 - cameraY);
 
         var grd = ctx.createLinearGradient(10 - cameraX, 10 - cameraY, 10 - cameraX, (10 - cameraY) + 1 + ((this.cannon.powerCannon) * 2));
         grd.addColorStop(0, "red");
@@ -182,6 +193,7 @@ class GameLogic {
 
         ctx.strokeStyle = "#000000";
         ctx.fillStyle = "#000000";
+        ctx.fillText("puissance du canon : " + this.cannon.powerCannon, 10 - cameraX, 150 - cameraY);
         ctx.fillText("Nombre de Tir restant : " + this.nbShoot, 40 - cameraX, 50 - cameraY);
         ctx.fillText("Nombre de cible restante : " + this.nbTarget, 40 - cameraX, 100 - cameraY);
         ctx.fillText("Score : " + this.nbTarget, 800 - cameraX, 50 - cameraY);

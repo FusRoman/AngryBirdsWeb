@@ -80,7 +80,12 @@ class Vector2D {
     }
 
     normalize() {
-        return this.div(this.norm());
+        if (this.norm() != 0) {
+            return this.div(this.norm());
+        }
+        else{
+            return new Vector2D(0, 0);
+        }
     }
 
     rotatePoint(center, angle) {
