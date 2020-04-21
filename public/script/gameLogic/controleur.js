@@ -12,7 +12,7 @@ class GameControleur {
                 this.gameObject.splice(1, 1);
             }
         
-            this.gameLogic.nbShoot--;
+            --this.gameLogic.nbBall;
         
             let beginVec = game_logic.cannon.shape.shapePoint[0];
             let endvec = game_logic.cannon.shape.shapePoint[1];

@@ -6,8 +6,6 @@ class GameLogic {
         this.canvas = canvas;
         this.menu = menu;
 
-        this.leftGame();
-
         this.hGround = 500;
         let groundShape = new Rectangle(-1000, this.hGround, 6000, 100);
         this.ground = new GameObject(groundShape, 0, 0.1, GMcondition.static, 0);
@@ -18,14 +16,11 @@ class GameLogic {
         this.gameObject.push(this.ground);
         this.gameObject.push(this.gmLimitWall);
 
-        this.engine = new PhysicsEngine(this.gameObject, this.context);
-        this.controleur = new GameControleur(this);
-
-
-        this.camera = new Camera(this.context);
         this.cannon = new Cannon(this.hGround);
 
-        this.score = 0;
+        this.camera = new Camera(this.context);
+        this.engine = new PhysicsEngine(this.gameObject, this.context);
+        this.controleur = new GameControleur(this);
 
         this.lastLoop = performance.now();
         this.counter = 0;
@@ -56,12 +51,12 @@ class GameLogic {
             });
 
 
-            if (this.nbTarget == 0) {
-                //this.score = this.score + 500 * this.nbShoot;
-                this.youWon();
+            if (this.nbTarget == 0 && this.isInGame) {
+                this.score += 5 * this.nbBall;
+                this.leftGame();
             }
-            if (this.nbShoot == 0 && this.nbTarget != 0) {
-                this.youLoose();
+            if (this.nbShoot == 0 && this.nbTarget != 0 && this.isInGame) {
+                this.leftGame();
             }
             this.cannon.draw(this.context);
 
@@ -78,15 +73,33 @@ class GameLogic {
     }
 
     enterLevel() {
+
+        this.gameObject.push(this.ground);
+        this.gameObject.push(this.gmLimitWall);
+
         this.isInGame = true;
+        this.score = 0;
         this.canvas.style.display = "initial";
         this.menu.style.display = "none";
     }
 
     leftGame() {
+        let level = this.levelDescriptor["levelDesc"].splice(this.actualIdLevel - 1, 1);
+        level[0]["score"] = this.score;
+        this.levelDescriptor["levelDesc"].splice(this.actualIdLevel - 1, 0, level[0]);
+        /*while (this.menu.firstChild) {
+            this.menu.removeChild(this.menu.lastChild);
+        }*/
+        this.createLevelMenu();
+
+
+        this.gameObject = new Array();
+        this.engine.gameObject = this.gameObject;
+        this.controleur.gameLogic = this;
+        this.engine.restartEngine(this.gameObject);
+        this.cannon = new Cannon(this.hGround);
         this.isInGame = false;
         this.canvas.style.display = "none";
-        this.menu.style.display = "initial";
     }
 
     createRectWall(descJsonWall, id) {
@@ -132,7 +145,7 @@ class GameLogic {
         return new Target(id, lpTarget, score, x, y, radiusTarget);
     }
 
-    newMenuButton(menu, specificLevelDesc) {
+    newMenuButton(specificLevelDesc) {
         let newButton = document.createElement("button");
         newButton.setAttribute("id", specificLevelDesc["path"]);
         newButton.innerHTML = specificLevelDesc["levelName"];
@@ -142,12 +155,15 @@ class GameLogic {
         newButton.disabled = !specificLevelDesc["resolue"];
         let mySelf = this;
         newButton.onclick = function () {
+            mySelf.enterLevel();
             let levelName = newButton.id;
             let path = "level/" + levelName + "/desc.json";
             loadFromServer(path).then((value) => {
                 let levelDesc = JSON.parse(value);
+                mySelf.nbBall = levelDesc["nbBall"];
                 let wall = levelDesc["wall"];
                 let target = levelDesc["target"];
+                mySelf.actualIdLevel = levelDesc["idlevel"];
                 let id = 3;
                 mySelf.nbTarget = target.length;
                 target.forEach(target => {
@@ -161,17 +177,22 @@ class GameLogic {
                     ++id;
                 });
             });
-            mySelf.enterLevel();
         };
-        menu.appendChild(newButton);
+        this.menu.appendChild(newButton);
     }
 
-    createLevelMenu() {
+    initLevelMenu() {
         loadFromServer("level/levelDescriptor.json").then((value) => {
             this.levelDescriptor = JSON.parse(value);
             this.levelDescriptor["levelDesc"].forEach((level) => {
-                game_logic.newMenuButton(menu, level);
+                game_logic.newMenuButton(level);
             });
+        });
+    }
+
+    createLevelMenu() {
+        this.levelDescriptor["levelDesc"].forEach((level) => {
+            game_logic.newMenuButton(level);
         });
     }
 
@@ -211,7 +232,7 @@ class GameLogic {
         ctx.strokeStyle = "#000000";
         ctx.fillStyle = "#000000";
         ctx.fillText("puissance du canon : " + this.cannon.powerCannon, 10 - cameraX, 150 - cameraY);
-        ctx.fillText("Nombre de Tir restant : " + this.nbShoot, 40 - cameraX, 50 - cameraY);
+        ctx.fillText("Nombre de Tir restant : " + this.nbBall, 40 - cameraX, 50 - cameraY);
         ctx.fillText("Nombre de cible restante : " + this.nbTarget, 40 - cameraX, 100 - cameraY);
         ctx.fillText("Score : " + this.score, 800 - cameraX, 50 - cameraY);
 

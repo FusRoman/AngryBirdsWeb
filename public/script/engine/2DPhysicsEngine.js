@@ -4,12 +4,18 @@ class PhysicsEngine {
         this.gameObject = gameObject;
         this.timeStep = 0;
         this.deltaT = 0.1;
-        this.restingLimit = 0.02;
+        //this.restingLimit = 0.02;
 
         this.drawingContext = ctx;
 
         this.collisionEngine = new CollisionEngine(this.gameObject);
         this.objectInCollision = new Array();
+    }
+
+    restartEngine(gameObject){
+        this.timeStep = 0;
+        this.gameObject = gameObject;
+        this.collisionEngine = new CollisionEngine(this.gameObject);
     }
 
     renderEngine() {

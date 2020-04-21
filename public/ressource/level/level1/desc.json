@@ -1,4 +1,6 @@
 {
+    "idlevel": 1,
+    "nbBall": 10,
     "target": [
         {
             "x": 550,

@@ -6,7 +6,7 @@ let menu = document.getElementById("menu");
 let game_logic = new GameLogic(canvas, context, menu);
 
 window.onload = function(){
-    game_logic.createLevelMenu();
+    game_logic.initLevelMenu();
 }
 
 /*
