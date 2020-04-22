@@ -83,6 +83,10 @@ class GameLogic {
 
         this.gameObject.push(this.ground);
         this.gameObject.push(this.gmLimitWall);
+        
+
+        this.controleur.gameLogic = this;
+        this.controleur.gameObject = this.controleur.gameLogic.gameObject;
 
         this.isInGame = true;
         this.score = 0;
@@ -99,12 +103,13 @@ class GameLogic {
         /*while (this.menu.firstChild) {
             this.menu.removeChild(this.menu.lastChild);
         }*/
-        this.createLevelMenu();
+        //this.createLevelMenu();
 
 
         this.gameObject = new Array();
         this.engine.gameObject = this.gameObject;
-        this.controleur.gameLogic = this;
+        this.controleur.gameLogic = this;        
+
         this.engine.restartEngine(this.gameObject);
         this.cannon = new Cannon(this.hGround);
         this.isInGame = false;
@@ -236,7 +241,6 @@ class GameLogic {
             loose.removeChild(remove);
             loose.removeChild(remove2);            
             mySelf.leftGame();
-            mySelf.enterLevel();
             let path = "level/level" + level.toString() + "/desc.json";
             loadFromServer(path).then((value) => {
                 let levelDesc = JSON.parse(value);
@@ -257,7 +261,7 @@ class GameLogic {
                     ++id;
                 });
             });
-              
+            mySelf.enterLevel();                          
             
         };
         loose.append(menuButton);
