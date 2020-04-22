@@ -55,13 +55,10 @@ class GameLogic {
 
             if (this.nbTarget == 0 && this.isInGame) {
                 this.score += 5 * this.nbBall;
-                //this.leftGame();
                 this.isInGame = false;
                 this.youWon(this.win);            
             }
-            if (this.nbBall == 0 && this.nbTarget != 0 && this.isInGame) {
-
-                //this.leftGame();
+            if (this.nbBall+1 == 0 && this.nbTarget != 0 && this.isInGame) {
                 this.isInGame = false;
                 this.youLoose(this.loose);                
             }
@@ -233,6 +230,12 @@ class GameLogic {
         });
     }
 
+    backtoMenu(){
+        let mySelf = this;
+        mySelf.leftGame();
+        mySelf.menu.style.display = "initial";
+    }
+
     youLoose(loose) {
         let mySelf=this;
         loose.setAttribute("style", "display: initial; position: absolute; top: 320px; left: 360px");
@@ -258,9 +261,7 @@ class GameLogic {
             let remove2 = document.getElementById("BacktoMenu");
             loose.removeChild(remove);
             loose.removeChild(remove2);
-            mySelf.leftGame();
-            mySelf.menu.style.display = "initial";
-            mySelf.game_logic.creatLevelMenu();
+            mySelf.backtoMenu();
         };
 
         //Ici l'action du boutton
@@ -293,8 +294,9 @@ class GameLogic {
     }
 
     youWon(win) {
-        win.setAttribute("style", "display: initial" );
-        win.setAttribute("position", "absolute" );    
+        let mySelf=this;
+        mySelf.retryLevel = undefined;
+        win.setAttribute("style", "display: initial; position: absolute; top: 320px; left: 360px");
         this.context.strokeStyle = "#000000";
         this.context.fillStyle = "#000000";
         this.context.fillText("Tu as Gagné!", 400 - this.camera.coordCamera.x, 240 - this.camera.coordCamera.y);
@@ -310,16 +312,24 @@ class GameLogic {
         nextButton.setAttribute("style", "2pt solid black; display: initial");
         nextButton.innerHTML = "Next Level";
         
-        let niveau = this.actualIdLevel+1;
-        let changeMenuButton = document.getElementById(niveau.toString());
-        changeMenuButton.disabled = !specificLevelDesc["resolue"];
+        let niveau = mySelf.actualIdLevel+1;                
+        let changeMenuButton = document.getElementById("level"+niveau.toString());
+        changeMenuButton.removeAttribute("disabled");
 
         menuButton.onclick = function(){
-            game_logic.initLevelMenu();
+            let remove = document.getElementById("BacktoMenu");
+            let remove2 = document.getElementById("NextLevel");
+            win.removeChild(remove);
+            win.removeChild(remove2); 
+            mySelf.backtoMenu();
         };
 
-        nextButton.onclick = function (){            
-            let mySelf = this;
+        nextButton.onclick = function (){     
+            let remove = document.getElementById("BacktoMenu");
+            let remove2 = document.getElementById("NextLevel");
+            win.removeChild(remove);
+            win.removeChild(remove2);
+            mySelf.leftGame();      
             mySelf.enterLevel();
             let levelName = "level"+niveau.toString();
             let path = "level/" + levelName + "/desc.json";
@@ -343,8 +353,8 @@ class GameLogic {
                 });
             });
         };
-        win.appendChild(menuButton);
-        win.appendChild(nextButton);
+        win.append(menuButton);
+        win.append(nextButton);
     }
 
     /*
@@ -374,8 +384,18 @@ class GameLogic {
 
         ctx.strokeStyle = "#000000";
         ctx.fillStyle = "#000000";
-        ctx.fillText("puissance du canon : " + this.cannon.powerCannon, 10 - cameraX, 150 - cameraY);
-        ctx.fillText("Nombre de Tir restant : " + this.nbBall, 40 - cameraX, 50 - cameraY);
+        if(this.cannon.powerCannon=="101"){
+            ctx.fillText("puissance du canon : " + "100", 10 - cameraX, 150 - cameraY);
+        }
+        else{
+            ctx.fillText("puissance du canon : " + this.cannon.powerCannon, 10 - cameraX, 150 - cameraY);
+        }
+        if(this.nbBall == "-1"){
+            ctx.fillText("Nombre de Tir restant : " + "0", 40 - cameraX, 50 - cameraY);
+        }
+        else{
+            ctx.fillText("Nombre de Tir restant : " + this.nbBall, 40 - cameraX, 50 - cameraY);
+        }
         ctx.fillText("Nombre de cible restante : " + this.nbTarget, 40 - cameraX, 100 - cameraY);
         ctx.fillText("Score : " + this.score, 800 - cameraX, 50 - cameraY);
 

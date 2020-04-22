@@ -1,5 +1,68 @@
 {
-    "id" : "level2",
-    "background" : "/home/fusroman/Documents/Informatique_et_Programmation/Programmation_Web/projet/ressource/Glitch parallex BG sampler/GA9NRNJSB792OG4 Akaki Cape-shows depth/LA9NRNJSB792OG4_main_1313432557.jpg"
-    
+    "idlevel": 2,
+    "nbBall": 20,
+    "target": [
+        {
+            "x": 550,
+            "y": 480,
+            "lp": 100,
+            "radius": 10,
+            "score": 10
+        },
+        {
+            "x": 700,
+            "y": 700,
+            "lp": 300,
+            "radius": 30,
+            "score": 50
+        }
+    ],
+    "wall": [
+        {
+            "type": "rectangle",
+            "x": 500,
+            "y": 450,
+            "width": 20,
+            "height": 50,
+            "mass": 200,
+            "restitution": 0.5
+        },
+        {
+            "type": "rectangle",
+            "x": 600,
+            "y": 450,
+            "width": 20,
+            "height": 50,
+            "mass": 200,
+            "restitution": 0.5
+        },
+        {
+            "type": "triangle",
+            "x": 500,
+            "y": 450,
+            "base": 120,
+            "hauteur": 20,
+            "mass": 150,
+            "restitution": 0.3
+        },
+        {
+            "type": "rectangle",
+            "x": 700,
+            "y": 450,
+            "width": 20,
+            "height": 200,
+            "mass" : 200,
+            "restitution": 0.5
+        },
+        {
+            "type": "rectangle",
+            "x": 700,
+            "y": 650,
+            "width": 200,
+            "height": 50,
+            "mass" : 200,
+            "restitution": 0.3
+        }
+
+    ]
 }
