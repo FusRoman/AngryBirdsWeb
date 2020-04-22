@@ -1,7 +1,50 @@
 {
-    "id" : "level3",
-    "background" : "../ressource/level/level3/background/background.jpg",
-    "cannon_pos" : ["20","20"]
-    
+    "idlevel": 3,
+    "nbBall": 10,
+    "target": [
+        {
+            "x": 550,
+            "y": 500,
+            "lp": 250,
+            "radius": 10,
+            "score": 10
+        },
+        {
+            "x": 700,
+            "y": 630,
+            "lp": 300,
+            "radius": 30,
+            "score": 50
+        }
+    ],
+    "wall": [
+        {
+            "type": "triangle",
+            "x": 500,
+            "y": 450,
+            "base": 120,
+            "hauteur": 20,
+            "mass": 150,
+            "restitution": 0.3
+        },
+        {
+            "type": "triangle",
+            "x": 600,
+            "y": 450,
+            "base": 150,
+            "hauteur": 20,
+            "mass": 150,
+            "restitution": 0.3
+        },
+        {
+            "type": "triangle",
+            "x": 800,
+            "y": 450,
+            "base": 120,
+            "hauteur": 20,
+            "mass": 200,
+            "restitution": 0.8
+        },
 
+    ]
 }

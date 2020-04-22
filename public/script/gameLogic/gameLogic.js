@@ -166,7 +166,6 @@ class GameLogic {
         newButton.disabled = !specificLevelDesc["resolue"];
         let mySelf = this;
         newButton.onclick = function () {
-            mySelf.enterLevel();
             let levelName = newButton.id;
             let path = "level/" + levelName + "/desc.json";
             
@@ -211,6 +210,8 @@ class GameLogic {
                 });
                 
             }
+            mySelf.leftGame();
+            mySelf.enterLevel();
         };
         this.menu.appendChild(newButton);
     }
@@ -328,11 +329,11 @@ class GameLogic {
             let remove = document.getElementById("BacktoMenu");
             let remove2 = document.getElementById("NextLevel");
             win.removeChild(remove);
-            win.removeChild(remove2);
-            mySelf.leftGame();      
-            mySelf.enterLevel();
+            win.removeChild(remove2);            
             let levelName = "level"+niveau.toString();
             let path = "level/" + levelName + "/desc.json";
+            mySelf.leftGame(); 
+            mySelf.enterLevel();      
             loadFromServer(path).then((value) => {
                 let levelDesc = JSON.parse(value);
                 mySelf.nbBall = levelDesc["nbBall"];
@@ -345,12 +346,12 @@ class GameLogic {
                     let newTarget = mySelf.createTarget(target, id);
                     mySelf.gameObject.push(newTarget);
                     ++id;
-                });
+                });                
                 wall.forEach((wall) => {
                     let newWall = mySelf.createWall(wall, id);
                     mySelf.gameObject.push(newWall);
                     ++id;
-                });
+                });                                     
             });
         };
         win.append(menuButton);

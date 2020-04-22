@@ -10,10 +10,10 @@
             "score": 10
         },
         {
-            "x": 700,
-            "y": 700,
-            "lp": 300,
-            "radius": 30,
+            "x": 750,
+            "y": 480,
+            "lp": 100,
+            "radius": 10,
             "score": 50
         }
     ],
@@ -53,16 +53,6 @@
             "height": 200,
             "mass" : 200,
             "restitution": 0.5
-        },
-        {
-            "type": "rectangle",
-            "x": 700,
-            "y": 650,
-            "width": 200,
-            "height": 50,
-            "mass" : 200,
-            "restitution": 0.3
         }
-
     ]
 }
