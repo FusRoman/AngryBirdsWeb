@@ -247,6 +247,7 @@ class GameLogic {
             loose.removeChild(remove);
             loose.removeChild(remove2);            
             mySelf.leftGame();
+            mySelf.enterLevel();
             mySelf.nbBall = mySelf.retryLevel["nbBall"];
             let wall = mySelf.retryLevel["wall"];
             let target = mySelf.retryLevel["target"];
@@ -262,9 +263,7 @@ class GameLogic {
                 let newWall = mySelf.createWall(wall, id);
                 mySelf.gameObject.push(newWall);
                 ++id;
-            });
-            mySelf.enterLevel();                          
-            
+            });                                             
         };
         loose.append(menuButton);
         loose.append(retryButton);
