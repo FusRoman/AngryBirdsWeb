@@ -173,11 +173,11 @@ class GameLogic {
             let levelName = newButton.id;
             let path = "level/" + levelName + "/desc.json";
             loadFromServer(path).then((value) => {
-                let levelDesc = JSON.parse(value);
-                mySelf.nbBall = levelDesc["nbBall"];
-                let wall = levelDesc["wall"];
-                let target = levelDesc["target"];
-                mySelf.actualIdLevel = levelDesc["idlevel"];
+                mySelf.retryLevel = JSON.parse(value); 
+                mySelf.nbBall = mySelf.retryLevel["nbBall"];
+                let wall = mySelf.retryLevel["wall"];
+                let target = mySelf.retryLevel["target"];
+                mySelf.actualIdLevel = mySelf.retryLevel["idlevel"];
                 let id = 3;
                 mySelf.nbTarget = target.length;
                 target.forEach(target => {
@@ -231,7 +231,13 @@ class GameLogic {
         
         //Pas fini donc a ne pas prendre en compte.
         menuButton.onclick = function(){
-            game_logic.initLevelMenu();
+            let remove = document.getElementById("Retry");
+            let remove2 = document.getElementById("BacktoMenu");
+            loose.removeChild(remove);
+            loose.removeChild(remove2);            
+            mySelf.leftGame();
+            mySelf.menu.style.display = "initial";
+            this.game_logic.creatLevelMenu();
         };
 
         //Ici l'action du boutton
@@ -241,25 +247,21 @@ class GameLogic {
             loose.removeChild(remove);
             loose.removeChild(remove2);            
             mySelf.leftGame();
-            let path = "level/level" + level.toString() + "/desc.json";
-            loadFromServer(path).then((value) => {
-                let levelDesc = JSON.parse(value);
-                mySelf.nbBall = levelDesc["nbBall"];
-                let wall = levelDesc["wall"];
-                let target = levelDesc["target"];
-                mySelf.actualIdLevel = levelDesc["idlevel"];
-                let id = 3;
-                mySelf.nbTarget = target.length;
-                target.forEach(target => {
-                    let newTarget = mySelf.createTarget(target, id);
-                    mySelf.gameObject.push(newTarget);
-                    ++id;
-                });
-                wall.forEach((wall) => {
-                    let newWall = mySelf.createWall(wall, id);
-                    mySelf.gameObject.push(newWall);
-                    ++id;
-                });
+            mySelf.nbBall = mySelf.retryLevel["nbBall"];
+            let wall = mySelf.retryLevel["wall"];
+            let target = mySelf.retryLevel["target"];
+            mySelf.actualIdLevel = mySelf.retryLevel["idlevel"];
+            let id = 3;
+            mySelf.nbTarget = target.length;
+            target.forEach(target => {
+                let newTarget = mySelf.createTarget(target, id);
+                mySelf.gameObject.push(newTarget);
+                ++id;
+            });
+            wall.forEach((wall) => {
+                let newWall = mySelf.createWall(wall, id);
+                mySelf.gameObject.push(newWall);
+                ++id;
             });
             mySelf.enterLevel();                          
             
