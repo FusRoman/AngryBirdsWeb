@@ -63,7 +63,7 @@ class GameLogic {
 
                 //this.leftGame();
                 this.isInGame = false;
-                this.youLoose(this.loose,this.actualIdLevel);                
+                this.youLoose(this.loose);                
             }
             this.cannon.draw(this.context);
 
@@ -172,8 +172,30 @@ class GameLogic {
             mySelf.enterLevel();
             let levelName = newButton.id;
             let path = "level/" + levelName + "/desc.json";
-            loadFromServer(path).then((value) => {
-                mySelf.retryLevel = JSON.parse(value); 
+            
+            if(mySelf.retryLevel == undefined){
+                loadFromServer(path).then((value) => {
+                    mySelf.retryLevel = JSON.parse(value); 
+                    mySelf.nbBall = mySelf.retryLevel["nbBall"];
+                    let wall = mySelf.retryLevel["wall"];
+                    let target = mySelf.retryLevel["target"];
+                    mySelf.actualIdLevel = mySelf.retryLevel["idlevel"];
+                    let id = 3;
+                    mySelf.nbTarget = target.length;
+                    target.forEach(target => {
+                        let newTarget = mySelf.createTarget(target, id);
+                        mySelf.gameObject.push(newTarget);
+                        ++id;
+                    });
+                    wall.forEach((wall) => {
+                        let newWall = mySelf.createWall(wall, id);
+                        mySelf.gameObject.push(newWall);
+                        ++id;
+                    });
+                });
+            }
+            
+            else {
                 mySelf.nbBall = mySelf.retryLevel["nbBall"];
                 let wall = mySelf.retryLevel["wall"];
                 let target = mySelf.retryLevel["target"];
@@ -190,7 +212,8 @@ class GameLogic {
                     mySelf.gameObject.push(newWall);
                     ++id;
                 });
-            });
+                
+            }
         };
         this.menu.appendChild(newButton);
     }
@@ -210,7 +233,7 @@ class GameLogic {
         });
     }
 
-    youLoose(loose,level) {
+    youLoose(loose) {
         let mySelf=this;
         loose.setAttribute("style", "display: initial; position: absolute; top: 320px; left: 360px");
         this.context.strokeStyle = "#000000";
@@ -234,10 +257,10 @@ class GameLogic {
             let remove = document.getElementById("Retry");
             let remove2 = document.getElementById("BacktoMenu");
             loose.removeChild(remove);
-            loose.removeChild(remove2);            
+            loose.removeChild(remove2);
             mySelf.leftGame();
             mySelf.menu.style.display = "initial";
-            this.game_logic.creatLevelMenu();
+            mySelf.game_logic.creatLevelMenu();
         };
 
         //Ici l'action du boutton
