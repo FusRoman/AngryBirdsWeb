@@ -4,7 +4,7 @@
     "target": [
         {
             "x": 550,
-            "y": 500,
+            "y": 450,
             "lp": 250,
             "radius": 10,
             "score": 10
@@ -21,20 +21,20 @@
         {
             "type": "triangle",
             "x": 500,
-            "y": 450,
+            "y": 470,
             "base": 120,
             "hauteur": 20,
             "mass": 150,
-            "restitution": 0.3
+            "restitution": 0.8
         },
         {
             "type": "triangle",
             "x": 600,
-            "y": 450,
+            "y": 470,
             "base": 150,
             "hauteur": 20,
             "mass": 150,
-            "restitution": 0.3
+            "restitution": 0.8
         },
         {
             "type": "triangle",

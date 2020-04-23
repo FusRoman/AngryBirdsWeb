@@ -223,6 +223,12 @@ class GameLogic {
     backtoMenu(){
         let mySelf = this;
         mySelf.leftGame();
+        let button = document.getElementsByName(mySelf.number);
+        if (mySelf.score > 0) {
+            console.log(button);
+            console.log(button.innerHTML);
+            button[0].innerHTML += " <br>Score : " + mySelf.score;
+        }
         mySelf.loose.style.display = "none";
         mySelf.win.style.display = "none";
         mySelf.menu.style.display = "initial";
