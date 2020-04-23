@@ -30,6 +30,8 @@ class GameLogic {
         this.fpsMsg = "";
         this.showFPS = false;
 
+        this.tabLevel = new Array();
+
     }
 
     updateGame() {
@@ -87,10 +89,11 @@ class GameLogic {
 
         this.isInGame = true;
         this.score = 0;
-        this.canvas.style.display = "initial";
+
         this.menu.style.display = "none";
         this.loose.style.display = "none";
         this.win.style.display = "none";
+        this.canvas.style.display = "initial";
     }
 
     leftGame() {
@@ -110,7 +113,9 @@ class GameLogic {
         this.engine.restartEngine(this.gameObject);
         this.cannon = new Cannon(this.hGround);
         this.isInGame = false;
-        this.canvas.style.display = "none";
+        this.canvas.style.display = "none";        
+        this.loose.style.display = "none";
+        this.win.style.display = "none";
     }
 
     createRectWall(descJsonWall, id) {
@@ -159,6 +164,7 @@ class GameLogic {
     newMenuButton(specificLevelDesc) {
         let newButton = document.createElement("button");
         newButton.setAttribute("id", specificLevelDesc["path"]);
+        newButton.setAttribute("number", specificLevelDesc["number"]);
         newButton.innerHTML = specificLevelDesc["levelName"];
         if (specificLevelDesc["score"] > 0) {
             newButton.innerHTML += " </br>Score : " + specificLevelDesc["score"];
@@ -166,12 +172,14 @@ class GameLogic {
         newButton.disabled = !specificLevelDesc["resolue"];
         let mySelf = this;
         newButton.onclick = function () {
+            mySelf.number = newButton.number;
             let levelName = newButton.id;
             let path = "level/" + levelName + "/desc.json";
             
-            if(mySelf.retryLevel == undefined){
+            if(mySelf.retryLevel == undefined || mySelf.tabLevel[number] == undefined ){
                 loadFromServer(path).then((value) => {
-                    mySelf.retryLevel = JSON.parse(value); 
+                    mySelf.retryLevel = JSON.parse(value);
+                    mySelf.tabLevel.push(mySelf.retryLevel);
                     mySelf.nbBall = mySelf.retryLevel["nbBall"];
                     let wall = mySelf.retryLevel["wall"];
                     let target = mySelf.retryLevel["target"];
@@ -189,26 +197,9 @@ class GameLogic {
                         ++id;
                     });
                 });
-            }
-            
+            }            
             else {
-                mySelf.nbBall = mySelf.retryLevel["nbBall"];
-                let wall = mySelf.retryLevel["wall"];
-                let target = mySelf.retryLevel["target"];
-                mySelf.actualIdLevel = mySelf.retryLevel["idlevel"];
-                let id = 3;
-                mySelf.nbTarget = target.length;
-                target.forEach(target => {
-                    let newTarget = mySelf.createTarget(target, id);
-                    mySelf.gameObject.push(newTarget);
-                    ++id;
-                });
-                wall.forEach((wall) => {
-                    let newWall = mySelf.createWall(wall, id);
-                    mySelf.gameObject.push(newWall);
-                    ++id;
-                });
-                
+                mySelf.loadTheLevel(number);                
             }
             mySelf.leftGame();
             mySelf.enterLevel();
@@ -234,7 +225,47 @@ class GameLogic {
     backtoMenu(){
         let mySelf = this;
         mySelf.leftGame();
+        mySelf.loose.style.display = "none";
+        mySelf.win.style.display = "none";
         mySelf.menu.style.display = "initial";
+    }
+
+    loadTheLevel(number){
+        mySelf.nbBall = mySelf.tabLevel[number]["nbBall"];
+        let wall = mySelf.tabLevel[number]["wall"];
+        let target = mySelf.tabLevel[number]["target"];
+        mySelf.actualIdLevel = mySelf.tabLevel[number]["idlevel"];
+        let id = 3;
+        mySelf.nbTarget = target.length;
+        target.forEach(target => {
+            let newTarget = mySelf.createTarget(target, id);
+            mySelf.gameObject.push(newTarget);
+            ++id;
+        });
+        wall.forEach((wall) => {
+            let newWall = mySelf.createWall(wall, id);
+            mySelf.gameObject.push(newWall);
+            ++id;
+        });
+    }
+
+    retryTheLevel(){
+        mySelf.nbBall = mySelf.retryLevel["nbBall"];
+        let wall = mySelf.retryLevel["wall"];
+        let target = mySelf.retryLevel["target"];
+        mySelf.actualIdLevel = mySelf.retryLevel["idlevel"];
+        let id = 3;
+        mySelf.nbTarget = target.length;
+        target.forEach(target => {
+            let newTarget = mySelf.createTarget(target, id);
+            mySelf.gameObject.push(newTarget);
+            ++id;
+        });
+        wall.forEach((wall) => {
+            let newWall = mySelf.createWall(wall, id);
+            mySelf.gameObject.push(newWall);
+            ++id;
+        });
     }
 
     youLoose(loose) {
@@ -273,25 +304,11 @@ class GameLogic {
             loose.removeChild(remove2);            
             mySelf.leftGame();
             mySelf.enterLevel();
-            mySelf.nbBall = mySelf.retryLevel["nbBall"];
-            let wall = mySelf.retryLevel["wall"];
-            let target = mySelf.retryLevel["target"];
-            mySelf.actualIdLevel = mySelf.retryLevel["idlevel"];
-            let id = 3;
-            mySelf.nbTarget = target.length;
-            target.forEach(target => {
-                let newTarget = mySelf.createTarget(target, id);
-                mySelf.gameObject.push(newTarget);
-                ++id;
-            });
-            wall.forEach((wall) => {
-                let newWall = mySelf.createWall(wall, id);
-                mySelf.gameObject.push(newWall);
-                ++id;
-            });                                             
+            mySelf.loadTheLevel();
+                                                         
         };
-        loose.append(menuButton);
-        loose.append(retryButton);
+        loose.appendChild(menuButton);
+        loose.appendChild(retryButton);
     }
 
     youWon(win) {
@@ -354,8 +371,8 @@ class GameLogic {
                 });                                     
             });
         };
-        win.append(menuButton);
-        win.append(nextButton);
+        win.appendChild(menuButton);
+        win.appendChild(nextButton);
     }
 
     /*

@@ -44,7 +44,6 @@
             "hauteur": 20,
             "mass": 200,
             "restitution": 0.8
-        },
-
+        }
     ]
 }
