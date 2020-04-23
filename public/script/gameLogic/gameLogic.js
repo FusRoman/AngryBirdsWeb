@@ -274,7 +274,6 @@ class GameLogic {
         this.context.fillText("Tu as Perdu!", 400 - this.camera.coordCamera.x  , 240 - this.camera.coordCamera.y);
         this.context.fillText("Ton score : " + this.score, 400 - this.camera.coordCamera.x, 280 - this.camera.coordCamera.y);
         
-        //Création d'un boutton
         let menuButton = document.createElement("button");
         menuButton.setAttribute("id", "BacktoMenu");
         menuButton.setAttribute("style", "2pt solid black; display: initial");
