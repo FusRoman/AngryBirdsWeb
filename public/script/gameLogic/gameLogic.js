@@ -86,15 +86,14 @@ class GameLogic {
         
 
         this.controleur.gameLogic = this;
-        this.controleur.gameObject = this.controleur.gameLogic.gameObject;
-
-        this.isInGame = true;
+        this.controleur.gameObject = this.controleur.gameLogic.gameObject;        
         this.score = 0;
 
         this.menu.style.display = "none";
         this.loose.style.display = "none";
         this.win.style.display = "none";
         this.canvas.style.display = "initial";
+        this.isInGame = true;
     }
 
     leftGame() {
@@ -286,26 +285,27 @@ class GameLogic {
         retryButton.setAttribute("style", "2pt solid black; display: initial");
         retryButton.innerHTML = "Retry";
         
+        mySelf.loose.appendChild(menuButton);
+        mySelf.loose.appendChild(retryButton);
+        
         menuButton.onclick = function(){
             let remove = document.getElementById("Retry");
             let remove2 = document.getElementById("BacktoMenu");
-            loose.removeChild(remove);
-            loose.removeChild(remove2);
+            mySelf.loose.removeChild(remove);
+            mySelf.loose.removeChild(remove2);
             mySelf.backtoMenu();
         };
 
         retryButton.onclick = function (){
             let remove = document.getElementById("Retry");
             let remove2 = document.getElementById("BacktoMenu");
-            loose.removeChild(remove);
-            loose.removeChild(remove2);            
+            myself.loose.removeChild(remove);
+            myself.loose.removeChild(remove2);            
             mySelf.leftGame();
             mySelf.enterLevel();
             mySelf.loadTheLevel(mySelf.number,mySelf);
                                                          
         };
-        loose.appendChild(menuButton);
-        loose.appendChild(retryButton);
     }
 
     youWon(win) {
@@ -334,20 +334,23 @@ class GameLogic {
         let niveau = mySelf.actualIdLevel+1;                
         let changeMenuButton = document.getElementById("level"+niveau.toString());
         changeMenuButton.removeAttribute("disabled");
+        
+        mySelf.win.appendChild(menuButton);
+        mySelf.win.appendChild(nextButton);
 
         menuButton.onclick = function(){
             let remove = document.getElementById("BacktoMenu");
             let remove2 = document.getElementById("NextLevel");
-            win.removeChild(remove);
-            win.removeChild(remove2); 
+            mySelf.win.removeChild(remove);
+            mySelf.win.removeChild(remove2); 
             mySelf.backtoMenu();
         };
 
         nextButton.onclick = function (){     
             let remove = document.getElementById("BacktoMenu");
             let remove2 = document.getElementById("NextLevel");
-            win.removeChild(remove);
-            win.removeChild(remove2);
+            mySelf.win.removeChild(remove);
+            mySelf.win.removeChild(remove2);
             mySelf.number=niveau-1;            
             let levelName = "level"+niveau.toString();
             let path = "level/" + levelName + "/desc.json";
@@ -374,8 +377,6 @@ class GameLogic {
                 });                                     
             });
         };
-        win.appendChild(menuButton);
-        win.appendChild(nextButton);
     }
 
     /*
