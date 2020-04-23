@@ -22,9 +22,13 @@ class GameControleur {
         
         this.canvas.addEventListener("click", event => {
             
-            if (this.gameObject[1] instanceof Boulet) {
+            if (this.gameObject[1] instanceof Boulet && mySelf.shapeCannon) {
                 this.gameObject.splice(1, 1);
-            }        
+            } else {
+                while(this.gameObject[1] instanceof Boulet){
+                    this.gameObject.splice(1, 1);
+                }
+            }
             
             --this.gameLogic.nbBall;
         
@@ -36,8 +40,8 @@ class GameControleur {
                 this.gameObject.splice(1, 0, new Boulet(endvec.x, endvec.y + 10, 20,speedBall));
             } else{
                 this.gameObject.splice(1, 0, new Boulet(endvec.x, endvec.y + 10, 9,speedBall));
-                this.gameObject.splice(1, 0, new Boulet(endvec.x, endvec.y + 50, 9,speedBall));
-                this.gameObject.splice(1, 0, new Boulet(endvec.x, endvec.y + 70, 9,speedBall));
+                this.gameObject.splice(1, 0, new Boulet(endvec.x, endvec.y + (-15), 9,speedBall));
+                this.gameObject.splice(1, 0, new Boulet(endvec.x, endvec.y + (-20), 9,speedBall));
                 //this.gameObject.splice(1, 0, new Fleche(endvec.x, endvec.y + 10, speedBall));
             }
         });
