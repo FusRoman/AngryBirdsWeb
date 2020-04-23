@@ -101,10 +101,6 @@ class GameLogic {
         let level = this.levelDescriptor["levelDesc"].splice(this.actualIdLevel - 1, 1);
         level[0]["score"] = this.score;
         this.levelDescriptor["levelDesc"].splice(this.actualIdLevel - 1, 0, level[0]);
-        /*while (this.menu.firstChild) {
-            this.menu.removeChild(this.menu.lastChild);
-        }*/
-        //this.createLevelMenu();
 
 
         this.gameObject = new Array();
@@ -114,9 +110,9 @@ class GameLogic {
         this.engine.restartEngine(this.gameObject);
         this.cannon = new Cannon(this.hGround);
         this.isInGame = false;
-        this.canvas.style.display = "none";        
         this.loose.style.display = "none";
         this.win.style.display = "none";
+        this.canvas.style.display = "none";                
     }
 
     createRectWall(descJsonWall, id) {
@@ -177,7 +173,8 @@ class GameLogic {
             mySelf.number = parseInt(newButton.name);
             let levelName = newButton.id;
             let path = "level/" + levelName + "/desc.json";
-            
+            mySelf.leftGame();
+            mySelf.enterLevel();    
             if(mySelf.tabLevel[mySelf.number] == undefined ){
                 loadFromServer(path).then((value) => {
                     mySelf.retryLevel = JSON.parse(value);
@@ -203,8 +200,7 @@ class GameLogic {
             else {
                 mySelf.loadTheLevel(mySelf.number,mySelf);                
             }
-            mySelf.leftGame();
-            mySelf.enterLevel();
+                    
         };
         this.menu.appendChild(newButton);
     }
@@ -290,7 +286,6 @@ class GameLogic {
         retryButton.setAttribute("style", "2pt solid black; display: initial");
         retryButton.innerHTML = "Retry";
         
-        //Pas fini donc a ne pas prendre en compte.
         menuButton.onclick = function(){
             let remove = document.getElementById("Retry");
             let remove2 = document.getElementById("BacktoMenu");
@@ -299,7 +294,6 @@ class GameLogic {
             mySelf.backtoMenu();
         };
 
-        //Ici l'action du boutton
         retryButton.onclick = function (){
             let remove = document.getElementById("Retry");
             let remove2 = document.getElementById("BacktoMenu");
