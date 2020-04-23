@@ -109,6 +109,7 @@ class GameLogic {
 
         this.engine.restartEngine(this.gameObject);
         this.cannon = new Cannon(this.hGround);
+        this.score = 0;
         this.isInGame = false;
         this.loose.style.display = "none";
         this.win.style.display = "none";
@@ -164,9 +165,6 @@ class GameLogic {
         newButton.setAttribute("style", "position: relative; top: 220px; left: 220px");
         newButton.setAttribute("name", specificLevelDesc["number"]);
         newButton.innerHTML = specificLevelDesc["levelName"];
-        if (specificLevelDesc["score"] > 0) {
-            newButton.innerHTML += " </br>Score : " + specificLevelDesc["score"];
-        }
         newButton.disabled = !specificLevelDesc["resolue"];
         let mySelf = this;
         newButton.onclick = function () {
@@ -214,21 +212,17 @@ class GameLogic {
         });
     }
 
+    /*
     createLevelMenu() {
         this.levelDescriptor["levelDesc"].forEach((level) => {
             game_logic.newMenuButton(level);
         });
     }
+    */
 
     backtoMenu(){
-        let mySelf = this;
-        mySelf.leftGame();
-        let button = document.getElementsByName(mySelf.number);
-        if (mySelf.score > 0) {
-            console.log(button);
-            console.log(button.innerHTML);
-            button[0].innerHTML += " <br>Score : " + mySelf.score;
-        }
+        let mySelf = this;        
+        mySelf.leftGame();        
         mySelf.loose.style.display = "none";
         mySelf.win.style.display = "none";
         mySelf.menu.style.display = "initial";
@@ -316,6 +310,10 @@ class GameLogic {
 
     youWon(win) {
         let mySelf=this;
+        let button = document.getElementsByName(mySelf.number);
+        if (mySelf.score > 0) {
+            button[0].innerHTML += " <br>Score : " + mySelf.score;
+        }
         mySelf.retryLevel = undefined;
         win.setAttribute("style", "display: initial; position: absolute; top: 320px; left: 360px");
         this.context.strokeStyle = "#000000";
