@@ -31,6 +31,7 @@ class GameLogic {
         this.showFPS = false;
 
         this.tabLevel = new Array();
+        this.number=-1;
 
     }
 
@@ -164,7 +165,8 @@ class GameLogic {
     newMenuButton(specificLevelDesc) {
         let newButton = document.createElement("button");
         newButton.setAttribute("id", specificLevelDesc["path"]);
-        newButton.setAttribute("number", specificLevelDesc["number"]);
+        newButton.setAttribute("style", "position: relative; top: 220px; left: 220px");
+        newButton.setAttribute("name", specificLevelDesc["number"]);
         newButton.innerHTML = specificLevelDesc["levelName"];
         if (specificLevelDesc["score"] > 0) {
             newButton.innerHTML += " </br>Score : " + specificLevelDesc["score"];
@@ -172,11 +174,11 @@ class GameLogic {
         newButton.disabled = !specificLevelDesc["resolue"];
         let mySelf = this;
         newButton.onclick = function () {
-            mySelf.number = newButton.number;
+            mySelf.number = parseInt(newButton.name);
             let levelName = newButton.id;
             let path = "level/" + levelName + "/desc.json";
             
-            if(mySelf.retryLevel == undefined || mySelf.tabLevel[number] == undefined ){
+            if(mySelf.tabLevel[mySelf.number] == undefined ){
                 loadFromServer(path).then((value) => {
                     mySelf.retryLevel = JSON.parse(value);
                     mySelf.tabLevel.push(mySelf.retryLevel);
@@ -199,7 +201,7 @@ class GameLogic {
                 });
             }            
             else {
-                mySelf.loadTheLevel(number);                
+                mySelf.loadTheLevel(mySelf.number,mySelf);                
             }
             mySelf.leftGame();
             mySelf.enterLevel();
@@ -230,7 +232,7 @@ class GameLogic {
         mySelf.menu.style.display = "initial";
     }
 
-    loadTheLevel(number){
+    loadTheLevel(number,mySelf){
         mySelf.nbBall = mySelf.tabLevel[number]["nbBall"];
         let wall = mySelf.tabLevel[number]["wall"];
         let target = mySelf.tabLevel[number]["target"];
@@ -249,6 +251,7 @@ class GameLogic {
         });
     }
 
+    /*
     retryTheLevel(){
         mySelf.nbBall = mySelf.retryLevel["nbBall"];
         let wall = mySelf.retryLevel["wall"];
@@ -267,7 +270,7 @@ class GameLogic {
             ++id;
         });
     }
-
+    */
     youLoose(loose) {
         let mySelf=this;
         loose.setAttribute("style", "display: initial; position: absolute; top: 320px; left: 360px");
@@ -304,7 +307,7 @@ class GameLogic {
             loose.removeChild(remove2);            
             mySelf.leftGame();
             mySelf.enterLevel();
-            mySelf.loadTheLevel();
+            mySelf.loadTheLevel(mySelf.number,mySelf);
                                                          
         };
         loose.appendChild(menuButton);
@@ -346,13 +349,15 @@ class GameLogic {
             let remove = document.getElementById("BacktoMenu");
             let remove2 = document.getElementById("NextLevel");
             win.removeChild(remove);
-            win.removeChild(remove2);            
+            win.removeChild(remove2);
+            mySelf.number=niveau-1;            
             let levelName = "level"+niveau.toString();
             let path = "level/" + levelName + "/desc.json";
             mySelf.leftGame(); 
             mySelf.enterLevel();      
             loadFromServer(path).then((value) => {
                 let levelDesc = JSON.parse(value);
+                mySelf.tabLevel.push(levelDesc);
                 mySelf.nbBall = levelDesc["nbBall"];
                 let wall = levelDesc["wall"];
                 let target = levelDesc["target"];
