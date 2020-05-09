@@ -246,7 +246,7 @@ class GameLogic {
         });
     }
 
-    /*
+    
     retryTheLevel(){
         mySelf.nbBall = mySelf.retryLevel["nbBall"];
         let wall = mySelf.retryLevel["wall"];
@@ -265,7 +265,7 @@ class GameLogic {
             ++id;
         });
     }
-    */
+    
     youLoose(loose) {
         let mySelf=this;
         loose.setAttribute("style", "display: initial; position: absolute; top: 320px; left: 360px");
@@ -298,8 +298,8 @@ class GameLogic {
         retryButton.onclick = function (){
             let remove = document.getElementById("Retry");
             let remove2 = document.getElementById("BacktoMenu");
-            myself.loose.removeChild(remove);
-            myself.loose.removeChild(remove2);            
+            mySelf.loose.removeChild(remove);
+            mySelf.loose.removeChild(remove2);            
             mySelf.leftGame();
             mySelf.enterLevel();
             mySelf.loadTheLevel(mySelf.number,mySelf);

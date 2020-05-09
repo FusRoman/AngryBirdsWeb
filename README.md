@@ -6,6 +6,11 @@
 $ node server/server.js
 ```
 
+### URL
+```Navigateur Web
+localhost:8000/
+```
+
 ## Controle 
 
 z: monter la caméra
